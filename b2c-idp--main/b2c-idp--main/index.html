@@ -1,0 +1,3591 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <title>B2C – Smart Construction Progress Platform</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f5f0e8;
+      --bg-elevated:#ffffff;
+      --bg-soft:#ede8dc;
+      --text-main:#1a1a2e;
+      --text-muted:#6b6b80;
+      --accent:#c8622a;
+      --accent-2:#2a7c6f;
+      --accent-soft:#e8a066;
+      --danger:#c0392b;
+      --success:#1a7f5a;
+      --border:#d9d0bc;
+      --shadow-soft:0 8px 32px rgba(26,26,46,0.10);
+      --shadow-tiny:0 2px 8px rgba(26,26,46,0.07);
+      --shadow-medium:0 12px 28px rgba(26,26,46,0.14);
+      --shadow-large:0 24px 56px rgba(26,26,46,0.18);
+      --gradient-primary:linear-gradient(135deg,#c8622a 0%,#2a7c6f 100%);
+      --gradient-warm:linear-gradient(135deg,#e8a066 0%,#c8622a 100%);
+      --gradient-card:linear-gradient(135deg,rgba(200,98,42,0.07) 0%,rgba(42,124,111,0.07) 100%);
+      --font-display:'Syne',sans-serif;
+      --font-body:'DM Sans',sans-serif;
+      --radius-sm:10px;
+      --radius-md:18px;
+      --radius-lg:28px;
+      --radius-xl:36px;
+    }
+    [data-theme="dark"]{
+      --bg:#111118;
+      --bg-elevated:#1a1a28;
+      --bg-soft:#16161f;
+      --text-main:#f0ede8;
+      --text-muted:#8888a8;
+      --accent:#e07840;
+      --accent-2:#3aaf9b;
+      --accent-soft:#e8a066;
+      --danger:#e05555;
+      --success:#2ab87a;
+      --border:#2a2a3a;
+      --shadow-soft:0 8px 32px rgba(0,0,0,0.5);
+      --shadow-tiny:0 2px 8px rgba(0,0,0,0.4);
+      --shadow-medium:0 12px 28px rgba(0,0,0,0.6);
+      --shadow-large:0 24px 56px rgba(0,0,0,0.7);
+      --gradient-card:linear-gradient(135deg,rgba(224,120,64,0.10) 0%,rgba(58,175,155,0.10) 100%);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{
+      font-family:var(--font-body);
+      background:var(--bg);
+      color:var(--text-main);
+      line-height:1.65;
+      -webkit-font-smoothing:antialiased;
+      min-height:100vh;
+    }
+    body::before{
+      content:'';
+      position:fixed;
+      inset:0;
+      background:
+        radial-gradient(ellipse 60% 40% at 10% 0%,rgba(200,98,42,0.10) 0%,transparent 60%),
+        radial-gradient(ellipse 50% 50% at 90% 100%,rgba(42,124,111,0.12) 0%,transparent 60%);
+      pointer-events:none;
+      z-index:0;
+    }
+    .section,.card,#customer-dashboard,#builderDashboard,#builderProjectArea{
+      scroll-margin-top:90px;
+      position:relative;
+      z-index:1;
+    }
+
+    /* ===== HEADER ===== */
+    header{
+      position:sticky;top:0;z-index:100;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 32px;
+      height:68px;
+      background:rgba(245,240,232,0.85);
+      backdrop-filter:blur(24px);
+      border-bottom:1px solid var(--border);
+      box-shadow:0 2px 16px rgba(26,26,46,0.06);
+      transition:background 0.3s;
+    }
+    [data-theme="dark"] header{background:rgba(17,17,24,0.88);}
+    .nav-left{display:flex;align-items:center;gap:14px;}
+    .logo-img-small{
+      width:42px;height:42px;border-radius:50%;object-fit:cover;
+      border:2.5px solid var(--accent);
+      box-shadow:0 0 0 4px rgba(200,98,42,0.12);
+      transition:transform 0.3s,box-shadow 0.3s;
+    }
+    .logo-img-small:hover{transform:rotate(8deg) scale(1.08);}
+    .brand-name{
+      font-family:var(--font-display);
+      font-size:22px;font-weight:800;
+      letter-spacing:0.05em;
+      background:var(--gradient-primary);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .brand-sub{
+      display:block;font-size:10px;letter-spacing:0.2em;
+      color:var(--text-muted);font-weight:500;text-transform:uppercase;
+    }
+    .nav-links{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+    .nav-link-btn{
+      border:none;background:transparent;
+      padding:8px 16px;font-size:13px;border-radius:999px;cursor:pointer;
+      color:var(--text-muted);font-family:var(--font-body);
+      transition:all 0.22s;font-weight:500;
+    }
+    .nav-link-btn:hover{background:var(--bg-soft);color:var(--text-main);}
+    .nav-link-btn.active-nav{background:var(--gradient-primary);color:#fff;font-weight:600;box-shadow:0 4px 14px rgba(200,98,42,0.25);}
+    .theme-toggle{
+      border:1.5px solid var(--border);background:var(--bg-soft);
+      padding:6px 14px;border-radius:999px;font-size:12px;
+      cursor:pointer;display:flex;align-items:center;gap:6px;
+      color:var(--text-muted);font-family:var(--font-body);
+      transition:all 0.22s;font-weight:500;
+    }
+    .theme-toggle:hover{border-color:var(--accent);color:var(--text-main);}
+    #menuBtn{
+      background:var(--gradient-primary);color:white;font-size:22px;border-radius:var(--radius-sm);
+      border:none;padding:7px 14px;position:fixed;top:14px;left:14px;z-index:1002;display:none;cursor:pointer;
+    }
+    @media(max-width:900px){#menuBtn{display:block;}}
+
+    /* ===== HERO ===== */
+    .hero{
+      padding:72px 32px 60px;
+      border-bottom:1px solid var(--border);
+      position:relative;overflow:hidden;
+    }
+    .hero-inner{
+      max-width:1080px;margin:0 auto;
+      display:grid;grid-template-columns:280px 1fr;gap:56px;align-items:center;
+    }
+    @media(max-width:900px){.hero-inner{grid-template-columns:1fr;gap:32px;text-align:center;}}
+    .hero-logo-box{text-align:center;}
+    .logo-img-large{
+      width:210px;max-width:100%;border-radius:50%;object-fit:cover;
+      box-shadow:0 0 0 8px rgba(200,98,42,0.1),0 24px 56px rgba(200,98,42,0.2);
+      animation:floatLogo 7s ease-in-out infinite;
+      transition:transform 0.4s;
+    }
+    .logo-img-large:hover{transform:scale(1.04);}
+    @keyframes floatLogo{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+    .hero-logo-caption{
+      margin-top:16px;font-size:13px;color:var(--text-muted);
+      font-weight:600;letter-spacing:0.12em;text-transform:uppercase;
+    }
+    .hero-content h2{
+      font-family:var(--font-display);
+      font-size:clamp(28px,4vw,44px);
+      font-weight:800;line-height:1.15;
+      margin-bottom:16px;
+      background:var(--gradient-primary);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .hero-content p{
+      color:var(--text-muted);font-size:16px;margin-bottom:36px;max-width:540px;
+    }
+    @media(max-width:900px){.hero-content p{max-width:100%;}}
+
+    /* ===== PORTAL CARDS ===== */
+    .portal-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+    @media(max-width:680px){.portal-grid{grid-template-columns:1fr;}}
+    .portal-card{
+      background:var(--bg-elevated);
+      border:1.5px solid var(--border);
+      border-radius:var(--radius-lg);
+      padding:32px 28px;
+      cursor:pointer;
+      transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.35s,border-color 0.3s;
+      position:relative;overflow:hidden;
+      box-shadow:var(--shadow-soft);
+    }
+    .portal-card::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:3px;
+      background:var(--gradient-primary);
+      transform:scaleX(0);transform-origin:left;transition:transform 0.35s;
+    }
+    .portal-card:hover::before{transform:scaleX(1);}
+    .portal-card:hover{
+      transform:translateY(-8px) scale(1.015);
+      box-shadow:var(--shadow-large);
+      border-color:var(--accent);
+    }
+    .portal-icon{
+      width:52px;height:52px;border-radius:var(--radius-md);
+      display:flex;align-items:center;justify-content:center;
+      font-size:22px;margin-bottom:16px;
+      background:var(--gradient-card);border:1.5px solid var(--border);
+    }
+    .portal-title{
+      font-family:var(--font-display);font-size:21px;font-weight:800;margin-bottom:8px;
+      color:var(--text-main);
+    }
+    .portal-badge{
+      display:inline-block;padding:3px 12px;border-radius:999px;
+      font-size:11px;font-weight:700;letter-spacing:0.1em;
+      background:var(--gradient-primary);color:#fff;margin-bottom:10px;
+    }
+    .portal-text{color:var(--text-muted);font-size:14px;margin-bottom:18px;}
+    .pill-row{display:flex;flex-wrap:wrap;gap:8px;}
+    .pill{
+      background:var(--bg-soft);border:1px solid var(--border);
+      color:var(--text-muted);border-radius:999px;padding:5px 13px;
+      font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:6px;
+      transition:background 0.25s,color 0.25s;
+    }
+    .portal-card:hover .pill{background:var(--gradient-primary);color:#fff;border-color:transparent;}
+
+    /* ===== AUTH ===== */
+    .auth-container{min-height:70vh;display:flex;align-items:center;justify-content:center;padding:48px 20px;}
+    .auth-card{
+      width:100%;max-width:480px;
+      background:var(--bg-elevated);border-radius:var(--radius-xl);
+      padding:44px 40px;border:1.5px solid var(--border);
+      box-shadow:var(--shadow-large);position:relative;overflow:hidden;
+    }
+    .auth-card::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:4px;
+      background:var(--gradient-primary);
+    }
+    .auth-title{
+      font-family:var(--font-display);font-size:28px;font-weight:800;
+      margin-bottom:8px;
+      background:var(--gradient-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .auth-subtitle{color:var(--text-muted);margin-bottom:28px;font-size:14px;line-height:1.6;}
+
+    /* ===== INPUTS ===== */
+    label{
+      display:block;font-size:13px;font-weight:600;
+      margin-bottom:5px;margin-top:16px;color:var(--text-muted);
+      text-transform:uppercase;letter-spacing:0.07em;
+    }
+    label i{margin-right:5px;color:var(--accent);}
+    input,textarea,select{
+      width:100%;padding:14px 16px;border-radius:var(--radius-md);
+      border:1.5px solid var(--border);background:var(--bg-soft);
+      color:var(--text-main);font-size:15px;font-family:var(--font-body);
+      transition:all 0.25s;outline:none;
+      box-shadow:var(--shadow-tiny);
+      margin-bottom:4px;
+    }
+    input:focus,textarea:focus,select:focus{
+      border-color:var(--accent);background:var(--bg-elevated);
+      box-shadow:0 0 0 3px rgba(200,98,42,0.13),var(--shadow-medium);
+    }
+    textarea{min-height:90px;resize:vertical;}
+
+    /* ===== BUTTONS ===== */
+    .btn{
+      border:none;padding:13px 24px;border-radius:var(--radius-md);
+      cursor:pointer;font-weight:700;font-size:14px;
+      font-family:var(--font-body);
+      transition:all 0.28s cubic-bezier(0.34,1.56,0.64,1);
+      position:relative;overflow:hidden;margin-top:14px;
+      display:inline-flex;align-items:center;gap:8px;
+    }
+    .btn-primary{
+      background:var(--gradient-primary);color:white;
+      box-shadow:0 6px 20px rgba(200,98,42,0.28);
+    }
+    .btn-primary:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 12px 28px rgba(200,98,42,0.36);}
+    .btn-primary:active{transform:translateY(-1px);}
+    .btn-sm{padding:8px 16px;font-size:13px;margin-top:8px;}
+
+    /* ===== CARDS ===== */
+    .card{
+      background:var(--bg-elevated);border-radius:var(--radius-lg);
+      padding:28px 28px;border:1.5px solid var(--border);
+      box-shadow:var(--shadow-soft);margin-bottom:20px;
+      position:relative;overflow:hidden;
+    }
+    .card::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:3px;
+      background:var(--gradient-primary);opacity:0.5;
+    }
+
+    /* ===== SECTION TITLES ===== */
+    .section-title{
+      font-family:var(--font-display);font-size:20px;font-weight:800;
+      margin-bottom:6px;color:var(--text-main);
+      display:flex;align-items:center;gap:9px;
+    }
+    .section-title i{color:var(--accent);font-size:18px;}
+    .section-subtitle{font-size:13px;color:var(--text-muted);margin-bottom:20px;}
+
+    /* ===== DASHBOARD LAYOUT ===== */
+    .dashboard-layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:20px;margin-top:20px;}
+    @media(max-width:900px){.dashboard-layout{grid-template-columns:1fr;gap:14px;}}
+
+    /* ===== SIDEBAR ===== */
+    .sidebar{
+      background:var(--bg-elevated);border-radius:var(--radius-lg);
+      border:1.5px solid var(--border);padding:16px;
+      box-shadow:var(--shadow-soft);height:fit-content;
+      position:sticky;top:86px;
+    }
+    @media(max-width:900px){
+      .sidebar{position:fixed;left:-100%;top:68px;width:220px;z-index:1001;border-radius:0 var(--radius-lg) var(--radius-lg) 0;}
+      .sidebar.open{left:0;}
+    }
+    .sidebar-title{
+      font-family:var(--font-display);font-size:11px;font-weight:700;
+      letter-spacing:0.14em;text-transform:uppercase;
+      color:var(--text-muted);margin-bottom:12px;
+      padding-bottom:10px;border-bottom:1px solid var(--border);
+    }
+    .sidebar-nav{display:flex;flex-direction:column;gap:4px;}
+    .sidebar-item{
+      border:none;text-align:left;width:100%;
+      padding:10px 14px;border-radius:var(--radius-sm);
+      font-size:13.5px;cursor:pointer;background:transparent;
+      color:var(--text-muted);display:flex;align-items:center;gap:10px;
+      transition:all 0.22s;font-weight:500;font-family:var(--font-body);
+    }
+    .sidebar-item i{width:16px;text-align:center;color:var(--accent);font-size:14px;}
+    .sidebar-item:hover{background:var(--bg-soft);color:var(--text-main);}
+    .sidebar-item.active{
+      background:var(--gradient-primary);color:#fff;font-weight:700;
+      box-shadow:0 4px 14px rgba(200,98,42,0.22);
+    }
+    .sidebar-item.active i{color:#fff;}
+
+    /* ===== STATS GRID ===== */
+    .stats-grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;
+      margin-bottom:20px;
+    }
+    .stat-card{
+      background:var(--bg-elevated);border:1.5px solid var(--border);
+      border-radius:var(--radius-md);padding:20px 16px;text-align:center;
+      box-shadow:var(--shadow-tiny);transition:transform 0.25s,box-shadow 0.25s;
+      position:relative;overflow:hidden;
+    }
+    .stat-card::after{
+      content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+      background:var(--gradient-primary);transform:scaleX(0);transition:transform 0.3s;
+    }
+    .stat-card:hover::after{transform:scaleX(1);}
+    .stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-medium);}
+    .stat-icon{font-size:24px;margin-bottom:8px;color:var(--accent);}
+    .stat-value{
+      display:block;font-family:var(--font-display);font-size:26px;font-weight:800;
+      color:var(--text-main);line-height:1;margin-bottom:4px;
+    }
+    .stat-label{font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;}
+
+    /* ===== PROGRESS BAR ===== */
+    .progress-wrapper{margin-bottom:18px;}
+    .progress-label{
+      display:flex;justify-content:space-between;
+      font-size:12px;color:var(--text-muted);font-weight:600;margin-bottom:6px;
+    }
+    .progress-bar{
+      width:100%;height:10px;background:var(--bg-soft);
+      border-radius:999px;overflow:hidden;border:1px solid var(--border);
+    }
+    .progress-fill{
+      height:100%;width:0%;
+      background:var(--gradient-primary);transition:width 0.7s cubic-bezier(0.4,0,0.2,1);
+      border-radius:999px;
+    }
+
+    /* ===== PHASES ===== */
+    .construction-phases{
+      display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;
+    }
+    .phase{
+      padding:9px 16px;border-radius:999px;font-size:12.5px;
+      border:1.5px solid var(--border);color:var(--text-muted);font-weight:600;
+      transition:all 0.3s;background:var(--bg-soft);
+    }
+    .phase.completed{
+      background:var(--gradient-primary);color:#fff;
+      border-color:transparent;box-shadow:0 4px 12px rgba(200,98,42,0.22);
+    }
+
+    /* ===== TIMELINE ===== */
+    .timeline-item{
+      border-left:3px solid var(--accent);padding:14px 18px;margin-bottom:12px;
+      border-radius:0 var(--radius-md) var(--radius-md) 0;
+      background:var(--bg-soft);
+      transition:transform 0.2s,box-shadow 0.2s;
+    }
+    .timeline-item:hover{transform:translateX(3px);box-shadow:var(--shadow-tiny);}
+    .update-date{
+      font-family:var(--font-display);font-size:13px;font-weight:700;
+      color:var(--accent);margin-bottom:6px;
+      display:flex;align-items:center;gap:6px;
+    }
+    .update-img{
+      max-width:100%;border-radius:var(--radius-md);
+      margin-top:10px;border:1.5px solid var(--border);
+      box-shadow:var(--shadow-soft);
+    }
+    .note-muted{font-size:12.5px;color:var(--text-muted);margin-top:4px;}
+
+    /* ===== DOMAIN DAYS INFO ===== */
+    #domainDaysInfo .timeline-item{
+      display:flex;flex-direction:column;gap:2px;
+    }
+
+    /* ===== UPLOAD BOX ===== */
+    .upload-box{
+      display:flex;align-items:center;gap:10px;
+      padding:16px;border-radius:var(--radius-md);
+      border:2px dashed var(--border);background:var(--bg-soft);
+      cursor:pointer;color:var(--text-muted);font-size:14px;font-weight:600;
+      transition:border-color 0.25s,background 0.25s;margin-top:10px;
+    }
+    .upload-box:hover{border-color:var(--accent);background:rgba(200,98,42,0.05);}
+    .upload-box i{color:var(--accent);font-size:18px;}
+    input[type="file"]{display:none;}
+
+    /* ===== NOTIFICATIONS ===== */
+    #notificationBox{
+      position:fixed;top:80px;right:20px;z-index:9999;
+      min-width:220px;max-width:340px;
+      background:var(--bg-elevated);color:var(--text-main);
+      border-radius:var(--radius-md);box-shadow:var(--shadow-large);
+      padding:14px 20px;display:none;font-size:14px;font-weight:600;
+      border:1.5px solid var(--border);border-left:4px solid var(--accent);
+      animation:slideInRight 0.3s ease;
+    }
+    @keyframes slideInRight{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+
+    /* ===== SEARCH INPUT ===== */
+    #searchUpdates{
+      width:100%;max-width:340px;margin-bottom:16px;
+      padding:11px 16px;border-radius:999px;
+      border:1.5px solid var(--border);background:var(--bg-soft);
+      font-size:14px;font-family:var(--font-body);
+    }
+
+    /* ===== FOOTER ===== */
+    footer{
+      padding:28px 32px;text-align:center;font-size:13px;
+      color:var(--text-muted);border-top:1px solid var(--border);
+      background:var(--bg-elevated);margin-top:60px;
+    }
+
+    /* ===== MISC ===== */
+    .main-dashboard-content{min-width:0;}
+    .badge-inline{
+      display:inline-block;padding:2px 10px;border-radius:999px;
+      font-size:11px;font-weight:700;background:var(--gradient-primary);color:#fff;
+      margin-left:6px;vertical-align:middle;
+    }
+    select option{background:var(--bg-elevated);}
+    #domainPieChart{max-height:260px;margin-top:10px;}
+    #recentEstimations .timeline-item{cursor:default;}
+    .builder-stats .stat-card{background:var(--gradient-card);}
+
+    /* Scrollbar */
+    ::-webkit-scrollbar{width:6px;height:6px;}
+    ::-webkit-scrollbar-track{background:var(--bg);}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:999px;}
+    ::-webkit-scrollbar-thumb:hover{background:var(--accent);}
+
+    /* Section pad */
+    .section{padding:32px;}
+    @media(max-width:700px){.section{padding:20px 14px;}}
+    @media(max-width:900px){.portal-grid{grid-template-columns:1fr;}}
+    [data-theme="dark"] .upload-box{background:var(--bg-soft);}
+
+    /* ===== STATUS BADGES ===== */
+    .status-badge{
+      display:inline-flex;align-items:center;gap:5px;
+      padding:3px 11px;border-radius:999px;font-size:11.5px;font-weight:700;
+      letter-spacing:0.06em;white-space:nowrap;
+    }
+    .badge-completed{background:rgba(26,127,90,0.15);color:var(--success);border:1.5px solid var(--success);}
+    .badge-doing{background:rgba(200,98,42,0.13);color:var(--accent);border:1.5px solid var(--accent);}
+    .badge-planned{background:rgba(107,107,128,0.13);color:var(--text-muted);border:1.5px solid var(--border);}
+    .badge-delayed{background:rgba(192,57,43,0.13);color:var(--danger);border:1.5px solid var(--danger);}
+
+    /* ===== SMART ALERTS ===== */
+    .smart-alerts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+    .alert-card{
+      display:flex;align-items:flex-start;gap:12px;
+      padding:12px 16px;border-radius:var(--radius-md);font-size:13px;font-weight:600;
+      border:1.5px solid;animation:alertIn 0.4s ease;
+    }
+    @keyframes alertIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}
+    .alert-warn{background:rgba(200,98,42,0.09);border-color:var(--accent-soft);color:var(--accent);}
+    .alert-success{background:rgba(26,127,90,0.09);border-color:var(--success);color:var(--success);}
+    .alert-info{background:rgba(42,124,111,0.09);border-color:var(--accent-2);color:var(--accent-2);}
+    .alert-card i{margin-top:1px;flex-shrink:0;}
+
+    /* ===== ACTIVITY FEED ===== */
+    .activity-feed-item{
+      display:flex;align-items:flex-start;gap:12px;
+      padding:10px 14px;border-radius:var(--radius-sm);
+      background:var(--bg-soft);margin-bottom:8px;
+      border:1px solid var(--border);transition:transform 0.2s;
+    }
+    .activity-feed-item:hover{transform:translateX(3px);}
+    .activity-icon{
+      width:32px;height:32px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:13px;flex-shrink:0;
+      background:var(--gradient-card);border:1.5px solid var(--border);
+    }
+    .activity-text{font-size:13px;color:var(--text-main);font-weight:600;line-height:1.4;}
+    .activity-time{font-size:11px;color:var(--text-muted);margin-top:2px;}
+
+    /* ===== MILESTONE TIMELINE ===== */
+    .milestone-track{
+      display:flex;align-items:flex-start;gap:0;
+      overflow-x:auto;padding:12px 0 8px;margin-bottom:12px;
+    }
+    .milestone-step{
+      display:flex;flex-direction:column;align-items:center;
+      min-width:110px;position:relative;flex:1;
+    }
+    .milestone-step:not(:last-child)::after{
+      content:'';position:absolute;top:14px;left:50%;
+      width:100%;height:3px;z-index:0;
+      background:var(--border);
+    }
+    .milestone-step.ms-done:not(:last-child)::after{background:var(--gradient-primary);}
+    .milestone-step.ms-active:not(:last-child)::after{background:linear-gradient(90deg,var(--accent),var(--border));}
+    .ms-dot{
+      width:28px;height:28px;border-radius:50%;
+      border:3px solid var(--border);background:var(--bg-soft);
+      display:flex;align-items:center;justify-content:center;
+      font-size:11px;z-index:1;position:relative;transition:all 0.3s;
+    }
+    .ms-done .ms-dot{background:var(--gradient-primary);border-color:transparent;color:#fff;box-shadow:0 0 0 4px rgba(200,98,42,0.16);}
+    .ms-active .ms-dot{background:var(--accent-soft);border-color:var(--accent);color:#fff;box-shadow:0 0 0 4px rgba(200,98,42,0.22);animation:msPulse 1.8s ease-in-out infinite;}
+    @keyframes msPulse{0%,100%{box-shadow:0 0 0 4px rgba(200,98,42,0.22);}50%{box-shadow:0 0 0 8px rgba(200,98,42,0.10);}}
+    .ms-label{font-size:10.5px;text-align:center;margin-top:7px;font-weight:600;color:var(--text-muted);line-height:1.3;max-width:96px;padding:0 4px;}
+    .ms-done .ms-label{color:var(--accent);}
+    .ms-active .ms-label{color:var(--text-main);}
+
+    /* ===== PROJECT HEALTH ===== */
+    .health-card{
+      display:flex;align-items:center;gap:16px;
+      padding:16px 20px;border-radius:var(--radius-md);
+      border:2px solid;margin-bottom:16px;
+    }
+    .health-good{background:rgba(26,127,90,0.08);border-color:var(--success);}
+    .health-warn{background:rgba(200,98,42,0.08);border-color:var(--accent);}
+    .health-bad{background:rgba(192,57,43,0.08);border-color:var(--danger);}
+    .health-icon{font-size:26px;flex-shrink:0;}
+    .health-title{font-family:var(--font-display);font-size:15px;font-weight:800;margin-bottom:2px;}
+    .health-desc{font-size:12px;color:var(--text-muted);}
+
+    /* ===== DOMAIN ANALYTICS ===== */
+    .domain-analytics-grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;
+      margin-bottom:16px;
+    }
+    .analytics-mini{
+      background:var(--bg-soft);border:1.5px solid var(--border);
+      border-radius:var(--radius-md);padding:14px 16px;
+    }
+    .analytics-mini-label{font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;}
+    .analytics-mini-value{font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--text-main);}
+    .analytics-mini-sub{font-size:12px;color:var(--accent);font-weight:600;margin-top:2px;}
+
+    /* ===== DOMAIN PROGRESS BARS ===== */
+    .domain-progress-list{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+    .domain-progress-row{display:flex;align-items:center;gap:10px;}
+    .domain-progress-name{font-size:12px;font-weight:600;color:var(--text-muted);width:160px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .domain-progress-bar-wrap{flex:1;height:8px;background:var(--bg-soft);border-radius:999px;overflow:hidden;border:1px solid var(--border);}
+    .domain-progress-bar-fill{height:100%;border-radius:999px;background:var(--gradient-primary);transition:width 0.7s ease;}
+    .domain-progress-pct{font-size:12px;font-weight:700;color:var(--accent);width:36px;text-align:right;flex-shrink:0;}
+
+    /* ===== QUICK FILTERS ===== */
+    .quick-filter-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+    .quick-filter-btn{
+      border:1.5px solid var(--border);background:var(--bg-soft);
+      color:var(--text-muted);border-radius:999px;padding:5px 14px;
+      font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-body);
+      transition:all 0.2s;
+    }
+    .quick-filter-btn:hover{border-color:var(--accent);color:var(--text-main);}
+    .quick-filter-btn.active{background:var(--gradient-primary);color:#fff;border-color:transparent;box-shadow:0 3px 10px rgba(200,98,42,0.2);}
+
+    /* ===== PHOTO METADATA ===== */
+    .photo-meta{
+      font-size:11.5px;color:var(--text-muted);font-weight:600;
+      background:var(--bg-soft);border-radius:0 0 var(--radius-sm) var(--radius-sm);
+      padding:5px 8px;border-top:1px solid var(--border);
+      display:flex;flex-direction:column;gap:2px;
+    }
+    .photo-wrap{
+      border-radius:var(--radius-sm);overflow:hidden;
+      border:1.5px solid var(--border);width:110px;
+      display:inline-flex;flex-direction:column;
+      transition:box-shadow 0.2s;
+    }
+    .photo-wrap:hover{box-shadow:var(--shadow-medium);}
+    .photo-wrap img{width:110px;height:82px;object-fit:cover;display:block;cursor:pointer;}
+
+    /* ===== BUILDER STATS ===== */
+    .builder-quick-stats{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;
+      margin-bottom:20px;
+    }
+
+    /* ===== ESTIMATION LAYOUT ===== */
+    @media(max-width:960px){
+      #estLayoutGrid{grid-template-columns:1fr !important;}
+      #domainCostPanel{position:static !important;}
+    }
+
+    /* ===== UPLOAD PREVIEW STYLES ===== */
+    .upload-zone{
+      border:2px dashed var(--border);border-radius:var(--radius-md);
+      background:var(--bg-soft);cursor:pointer;transition:all 0.25s;
+      padding:20px;text-align:center;margin-top:10px;position:relative;
+    }
+    .upload-zone:hover,.upload-zone.drag-over{
+      border-color:var(--accent);background:rgba(200,98,42,0.05);
+    }
+    .upload-zone i{font-size:24px;color:var(--accent);margin-bottom:8px;display:block;}
+    .upload-zone span{color:var(--text-muted);font-size:13px;font-weight:600;}
+    .upload-zone .upload-hint{font-size:11px;color:var(--text-muted);margin-top:4px;opacity:0.7;}
+    .file-preview-grid{
+      display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;
+    }
+    .file-preview-item{
+      position:relative;border-radius:var(--radius-sm);overflow:hidden;
+      border:2px solid var(--border);transition:border-color 0.2s;
+      width:90px;height:90px;background:var(--bg-soft);
+    }
+    .file-preview-item:hover{border-color:var(--accent);}
+    .file-preview-item img{width:100%;height:100%;object-fit:cover;}
+    .file-preview-item .remove-file{
+      position:absolute;top:3px;right:3px;
+      width:18px;height:18px;border-radius:50%;
+      background:rgba(192,57,43,0.9);color:#fff;
+      border:none;cursor:pointer;font-size:10px;
+      display:flex;align-items:center;justify-content:center;
+      transition:transform 0.2s;
+    }
+    .file-preview-item .remove-file:hover{transform:scale(1.15);}
+    .selected-files-list{margin-top:10px;}
+    .selected-file-tag{
+      display:inline-flex;align-items:center;gap:6px;
+      background:var(--bg-soft);border:1.5px solid var(--border);
+      border-radius:999px;padding:5px 12px;font-size:12px;
+      color:var(--text-main);font-weight:600;margin:3px 3px 0 0;
+      transition:all 0.2s;
+    }
+    .selected-file-tag i{color:var(--success);font-size:11px;}
+    .selected-file-tag.img-preview-tag{cursor:pointer;}
+    .selected-file-tag.img-preview-tag:hover{border-color:var(--accent);color:var(--accent);}
+    .upload-count-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      background:var(--gradient-primary);color:#fff;
+      border-radius:999px;padding:4px 12px;font-size:12px;font-weight:700;
+      margin-top:8px;
+    }
+
+    /* ===== CALENDAR SMART HISTORY ===== */
+    .cal-tab-group{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;margin-top:10px;}
+    .cal-tab{
+      border:1.5px solid var(--border);background:var(--bg-soft);
+      color:var(--text-muted);border-radius:999px;padding:7px 16px;
+      font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-body);
+      transition:all 0.22s;
+    }
+    .cal-tab:hover{border-color:var(--accent);color:var(--text-main);}
+    .cal-tab.active{background:var(--gradient-primary);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(200,98,42,0.22);}
+    .cal-section{display:none;}
+    .cal-section.active{display:block;}
+    .history-img-grid{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;}
+    .history-img-grid img{width:100px;height:80px;object-fit:cover;border-radius:var(--radius-sm);border:1.5px solid var(--border);cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;}
+    .history-img-grid img:hover{transform:scale(1.06);box-shadow:var(--shadow-medium);}
+
+    /* lightbox */
+    #imgLightbox{
+      display:none;position:fixed;inset:0;z-index:9999;
+      background:rgba(0,0,0,0.88);align-items:center;justify-content:center;
+    }
+    #imgLightbox.open{display:flex;}
+    #imgLightbox img{max-width:90vw;max-height:90vh;border-radius:var(--radius-md);box-shadow:0 32px 64px rgba(0,0,0,0.6);}
+    #imgLightbox .close-lb{
+      position:fixed;top:18px;right:22px;font-size:28px;color:#fff;cursor:pointer;
+      background:rgba(0,0,0,0.4);border-radius:50%;width:42px;height:42px;
+      display:flex;align-items:center;justify-content:center;transition:background 0.2s;
+    }
+    #imgLightbox .close-lb:hover{background:rgba(192,57,43,0.8);}
+
+    /* ===== DOMAIN TIMELINE STATUS CARDS ===== */
+    .domain-status-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px;}
+    .domain-status-card{
+      background:var(--bg-elevated);border:1.5px solid var(--border);
+      border-radius:var(--radius-md);padding:16px;
+      box-shadow:var(--shadow-tiny);position:relative;overflow:hidden;
+      transition:transform 0.2s,box-shadow 0.2s;
+    }
+    .domain-status-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-medium);}
+    .domain-status-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;}
+    .domain-status-card.ds-planned::before{background:var(--text-muted);}
+    .domain-status-card.ds-doing::before{background:var(--accent);}
+    .domain-status-card.ds-completed::before{background:var(--success);}
+    .domain-status-card.ds-delayed::before{background:var(--danger);}
+    .ds-name{font-family:var(--font-display);font-size:13px;font-weight:700;color:var(--text-main);margin-bottom:8px;line-height:1.3;}
+    .ds-bar-wrap{height:6px;background:var(--bg-soft);border-radius:999px;overflow:hidden;margin-bottom:8px;border:1px solid var(--border);}
+    .ds-bar-fill{height:100%;border-radius:999px;transition:width 0.8s ease;}
+    .ds-planned .ds-bar-fill{background:var(--text-muted);width:0%;}
+    .ds-doing .ds-bar-fill{background:var(--accent);}
+    .ds-completed .ds-bar-fill{background:var(--success);width:100%;}
+    .ds-delayed .ds-bar-fill{background:var(--danger);}
+    .ds-meta{font-size:11px;color:var(--text-muted);font-weight:600;}
+    .ds-dates{font-size:11px;color:var(--text-muted);margin-top:4px;display:flex;gap:8px;flex-wrap:wrap;}
+
+    /* ===== UNIFIED SMART TIMELINE ===== */
+    .smart-timeline-item{
+      display:flex;gap:14px;margin-bottom:16px;position:relative;
+    }
+    .smart-timeline-item::before{
+      content:'';position:absolute;left:17px;top:36px;bottom:-16px;width:2px;
+      background:var(--border);z-index:0;
+    }
+    .smart-timeline-item:last-child::before{display:none;}
+    .sti-icon{
+      width:36px;height:36px;border-radius:50%;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;font-size:14px;
+      position:relative;z-index:1;border:2px solid var(--border);
+    }
+    .sti-icon.sti-daily{background:rgba(200,98,42,0.12);color:var(--accent);border-color:var(--accent);}
+    .sti-icon.sti-estimation{background:rgba(26,127,90,0.12);color:var(--success);border-color:var(--success);}
+    .sti-icon.sti-bill{background:rgba(42,124,111,0.12);color:var(--accent-2);border-color:var(--accent-2);}
+    .sti-icon.sti-image{background:rgba(232,160,102,0.12);color:var(--accent-soft);border-color:var(--accent-soft);}
+    .sti-icon.sti-suggestion{background:rgba(107,107,128,0.12);color:var(--text-muted);border-color:var(--border);}
+    .sti-body{flex:1;background:var(--bg-elevated);border:1.5px solid var(--border);border-radius:var(--radius-md);padding:12px 16px;box-shadow:var(--shadow-tiny);}
+    .sti-date-label{font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px;}
+    .sti-title{font-size:13.5px;font-weight:700;color:var(--text-main);margin-bottom:3px;}
+    .sti-desc{font-size:12.5px;color:var(--text-muted);line-height:1.5;}
+    .sti-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+    .sti-chip{
+      font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;
+      background:var(--bg-soft);border:1px solid var(--border);color:var(--text-muted);
+      display:inline-flex;align-items:center;gap:5px;
+    }
+
+    /* ===== APPROVAL SYSTEM ===== */
+    .approval-item{
+      background:var(--bg-elevated);border:1.5px solid var(--border);
+      border-radius:var(--radius-md);padding:16px 18px;margin-bottom:14px;
+      box-shadow:var(--shadow-tiny);
+    }
+    .approval-item.apr-pending{border-left:4px solid var(--accent-soft);}
+    .approval-item.apr-approved{border-left:4px solid var(--success);}
+    .approval-item.apr-changes{border-left:4px solid var(--danger);}
+    .approval-header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
+    .approval-title{font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--text-main);flex:1;}
+    .approval-date{font-size:11px;color:var(--text-muted);}
+    .approval-desc{font-size:13px;color:var(--text-muted);margin-bottom:10px;line-height:1.5;}
+    .approval-thumb{width:80px;height:60px;object-fit:cover;border-radius:var(--radius-sm);border:1.5px solid var(--border);cursor:pointer;transition:transform 0.2s;}
+    .approval-thumb:hover{transform:scale(1.06);}
+    .approval-thumbs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+    .approval-actions{display:flex;gap:8px;flex-wrap:wrap;}
+    .btn-approve{background:rgba(26,127,90,0.12);color:var(--success);border:1.5px solid var(--success);padding:7px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font-body);transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;}
+    .btn-approve:hover{background:var(--success);color:#fff;}
+    .btn-reject{background:rgba(192,57,43,0.10);color:var(--danger);border:1.5px solid var(--danger);padding:7px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font-body);transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;}
+    .btn-reject:hover{background:var(--danger);color:#fff;}
+    .approval-status-tag{padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.05em;}
+    .ast-pending{background:rgba(232,160,102,0.15);color:var(--accent-soft);border:1px solid var(--accent-soft);}
+    .ast-approved{background:rgba(26,127,90,0.12);color:var(--success);border:1px solid var(--success);}
+    .ast-changes{background:rgba(192,57,43,0.10);color:var(--danger);border:1px solid var(--danger);}
+    .approval-comment-box{width:100%;padding:8px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--bg-soft);font-size:13px;font-family:var(--font-body);color:var(--text-main);margin-top:8px;resize:none;min-height:60px;}
+    .approval-comment-box:focus{border-color:var(--accent);outline:none;}
+
+    /* ===== COST SUMMARY DASHBOARD ===== */
+    .cost-summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px;}
+    .cost-summary-card{
+      background:var(--bg-elevated);border:1.5px solid var(--border);
+      border-radius:var(--radius-md);padding:16px;text-align:center;
+      box-shadow:var(--shadow-tiny);
+    }
+    .cost-summary-label{font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;}
+    .cost-summary-value{font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--text-main);}
+    .cost-summary-sub{font-size:11px;color:var(--text-muted);margin-top:3px;}
+    .cost-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px;}
+    .cost-table th{text-align:left;padding:8px 12px;background:var(--bg-soft);color:var(--text-muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1.5px solid var(--border);}
+    .cost-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-main);}
+    .cost-table tr:last-child td{border-bottom:none;}
+    .cost-table tr:hover td{background:var(--bg-soft);}
+    .cost-amt{font-family:var(--font-display);font-weight:800;color:var(--accent);}
+
+    /* ===== DOCUMENT LIBRARY ===== */
+    .doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:14px;}
+    .doc-card{
+      background:var(--bg-elevated);border:1.5px solid var(--border);
+      border-radius:var(--radius-md);padding:16px;
+      display:flex;flex-direction:column;gap:8px;
+      box-shadow:var(--shadow-tiny);transition:transform 0.2s,box-shadow 0.2s;
+    }
+    .doc-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-medium);}
+    .doc-icon{font-size:28px;color:var(--accent);margin-bottom:4px;}
+    .doc-name{font-size:13px;font-weight:700;color:var(--text-main);word-break:break-word;}
+    .doc-meta{font-size:11px;color:var(--text-muted);}
+    .doc-actions{display:flex;gap:6px;margin-top:4px;}
+    .btn-doc{background:var(--bg-soft);border:1.5px solid var(--border);color:var(--text-muted);padding:5px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-body);transition:all 0.2s;display:inline-flex;align-items:center;gap:5px;}
+    .btn-doc:hover{border-color:var(--accent);color:var(--accent);}
+    .doc-upload-area{border:2px dashed var(--border);border-radius:var(--radius-md);padding:20px;text-align:center;background:var(--bg-soft);cursor:pointer;transition:all 0.25s;margin-top:12px;}
+    .doc-upload-area:hover{border-color:var(--accent);background:rgba(200,98,42,0.04);}
+    .doc-upload-area i{font-size:24px;color:var(--accent);display:block;margin-bottom:6px;}
+    .doc-upload-area span{font-size:13px;font-weight:600;color:var(--text-muted);}
+
+    /* ===== DELAY / ISSUE ALERTS ===== */
+    .delay-item{
+      display:flex;align-items:flex-start;gap:12px;
+      background:rgba(192,57,43,0.06);border:1.5px solid var(--danger);
+      border-radius:var(--radius-md);padding:12px 16px;margin-bottom:10px;
+    }
+    .delay-icon{color:var(--danger);font-size:16px;flex-shrink:0;margin-top:2px;}
+    .delay-title{font-size:13px;font-weight:700;color:var(--danger);margin-bottom:2px;}
+    .delay-desc{font-size:12.5px;color:var(--text-muted);}
+    .delay-date{font-size:11px;color:var(--text-muted);margin-top:3px;}
+
+    /* ===== BUILDER APPROVAL UPLOAD SECTION ===== */
+    .approval-type-selector{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;}
+    .apr-type-btn{
+      border:1.5px solid var(--border);background:var(--bg-soft);
+      color:var(--text-muted);border-radius:999px;padding:6px 14px;
+      font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-body);
+      transition:all 0.2s;
+    }
+    .apr-type-btn:hover,.apr-type-btn.active{background:var(--gradient-primary);color:#fff;border-color:transparent;}
+
+    /* ===== BEFORE/AFTER SLIDER ===== */
+    .ba-container{position:relative;overflow:hidden;border-radius:var(--radius-md);border:1.5px solid var(--border);user-select:none;touch-action:none;background:var(--bg-soft);margin-top:10px;}
+    .ba-before{position:absolute;inset:0;overflow:hidden;}
+    .ba-before img,.ba-after img{width:100%;height:100%;object-fit:cover;display:block;}
+    .ba-after{width:100%;height:100%;}
+    .ba-after img{width:100%;height:100%;object-fit:cover;}
+    .ba-slider-line{position:absolute;top:0;bottom:0;width:3px;background:#fff;box-shadow:0 0 8px rgba(0,0,0,0.5);cursor:ew-resize;z-index:10;}
+    .ba-handle{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;left:-18px;color:var(--accent);font-size:14px;}
+    .ba-label{position:absolute;top:8px;font-size:11px;font-weight:700;color:#fff;background:rgba(0,0,0,0.45);padding:3px 8px;border-radius:999px;}
+    .ba-label-before{left:10px;}
+    .ba-label-after{right:10px;}
+    .ba-placeholder{display:flex;align-items:center;justify-content:center;height:180px;color:var(--text-muted);font-size:13px;font-weight:600;flex-direction:column;gap:8px;}
+    .ba-placeholder i{font-size:28px;color:var(--border);}
+
+    /* ===== DELAY ALERT FORM (BUILDER) ===== */
+    #delayAlertStatus{font-size:13px;margin-top:8px;color:var(--accent-soft);font-weight:500;}
+
+    /* ===== RESPONSIVE TWEAKS ===== */
+    @media(max-width:680px){
+      .domain-status-grid{grid-template-columns:1fr 1fr;}
+      .cost-summary-grid{grid-template-columns:1fr 1fr;}
+      .doc-grid{grid-template-columns:1fr 1fr;}
+    }
+    @media(max-width:420px){
+      .domain-status-grid{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="nav-left">
+    <img src="https://i.postimg.cc/FsVvpMbG/logo.jpg" alt="B2C logo" class="logo-img-small"/>
+    <div>
+      <div class="brand-name">B2C</div>
+      <span class="brand-sub">construction · progress · tracking</span>
+    </div>
+  </div>
+  <div class="nav-links">
+    <button class="nav-link-btn" onclick="openCustomerLoginAndScroll()"><i class="fa fa-user"></i> Customer</button>
+    <button class="nav-link-btn" onclick="openBuilderLoginAndScroll()"><i class="fa fa-hard-hat"></i> Builder</button>
+    <button class="theme-toggle" onclick="toggleTheme()">
+      <i class="fa fa-circle-half-stroke"></i><span id="themeLabel">Light</span>
+    </button>
+  </div>
+</header>
+
+<div id="notificationBox"></div>
+<button id="menuBtn" title="Menu">&#9776;</button>
+
+<main id="landing">
+  <section class="hero" id="portal-section">
+    <div class="hero-inner">
+      <div class="hero-logo-box">
+        <img src="https://i.postimg.cc/FsVvpMbG/logo.jpg" alt="B2C logo" class="logo-img-large"/>
+        <div class="hero-logo-caption">B2C – Smart construction link</div>
+      </div>
+      <div class="hero-content">
+        <h2>Smart Construction Progress Monitoring Platform</h2>
+        <p>Track daily construction progress, view site updates, monitor timelines and maintain transparent communication between builder and customer.</p>
+        <div class="portal-grid">
+          <div class="portal-card" onclick="openCustomerFromHero()" tabindex="0">
+            <div class="portal-icon"><i class="fa fa-user" style="color:var(--accent);"></i></div>
+            <div class="portal-badge">Owner</div>
+            <div class="portal-title">Customer Portal</div>
+            <p class="portal-text">Enter your 10‑digit project code, see daily site photos, give suggestions and view estimation & planned images.</p>
+            <div class="pill-row">
+              <span class="pill"><i class="fa fa-camera"></i> Daily updates</span>
+              <span class="pill"><i class="fa fa-calculator"></i> Estimation</span>
+              <span class="pill"><i class="fa fa-chart-pie"></i> Analytics</span>
+            </div>
+          </div>
+          <div class="portal-card" onclick="openBuilderFromHero()" tabindex="0">
+            <div class="portal-icon"><i class="fa fa-hard-hat" style="color:var(--accent-2);"></i></div>
+            <div class="portal-badge">Contractor</div>
+            <div class="portal-title">Builder Portal</div>
+            <p class="portal-text">Login as builder, open project and send estimation, planned images and domain-wise daily work logs.</p>
+            <div class="pill-row">
+              <span class="pill"><i class="fa fa-calculator"></i> Estimate</span>
+              <span class="pill"><i class="fa fa-image"></i> Planned Images</span>
+              <span class="pill"><i class="fa fa-layer-group"></i> Domains</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ====== CUSTOMER PORTAL ====== -->
+<section id="customer-portal" class="section" style="display:none;">
+  <div class="auth-container">
+    <div id="customer-login" class="auth-card">
+      <div class="auth-title"><i class="fa fa-user-circle"></i> Customer Login</div>
+      <div class="auth-subtitle">Enter your <b>10‑digit project code</b> to open your dashboard and track construction progress.</div>
+      <label><i class="fa fa-barcode"></i> 10‑digit project code</label>
+      <input id="custCodeInput" maxlength="10" placeholder="Example: 9823456712" autocomplete="off"/>
+      <button class="btn btn-primary" onclick="enterCustomerPortal()"><i class="fa fa-arrow-right"></i> Open Dashboard</button>
+      <p id="custLoginMsg" style="font-size:13px;margin-top:10px;color:var(--accent-soft);font-weight:500;"></p>
+    </div>
+  </div>
+
+  <div id="customer-dashboard" style="display:none; margin-top:10px; padding:0 0 40px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+      <div class="section-title" style="font-size:22px;">
+        <i class="fa fa-tachometer-alt"></i> Your Project Dashboard
+      </div>
+      <button id="downloadPDFBtn" class="btn btn-primary btn-sm" onclick="downloadPDF()" style="margin-left:auto;">
+        <i class="fa fa-file-pdf"></i> Download PDF
+      </button>
+    </div>
+    <p class="section-subtitle" style="margin-bottom:20px;">Project code: <strong id="custCodeDisplay"></strong></p>
+
+    <!-- Progress bar -->
+    <div class="progress-wrapper">
+      <div class="progress-label">
+        <span>Project Completion</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <!-- Milestone Timeline -->
+    <div class="card" style="padding:16px 20px;margin-bottom:16px;overflow-x:auto;">
+      <div class="section-title" style="font-size:15px;margin-bottom:10px;"><i class="fa fa-road"></i> Project Milestone Timeline</div>
+      <div class="milestone-track" id="milestoneTrack"></div>
+    </div>
+
+    <!-- Phase tracker (legacy pills) -->
+    <div class="construction-phases" id="phaseTracker" style="display:none;"></div>
+
+    <!-- Domain Days Info -->
+    <div id="domainDaysInfo" style="margin-top:4px;"></div>
+
+    <!-- Pie Chart -->
+    <div class="card" style="padding:20px 24px;margin-top:0;" id="pieChartCard">
+      <div class="section-title" style="font-size:16px;margin-bottom:2px;"><i class="fa fa-chart-pie"></i> Domain Activity Breakdown</div>
+      <canvas id="domainPieChart" height="120"></canvas>
+    </div>
+
+    <!-- Stats grid -->
+    <div class="stats-grid" id="statsDashboard">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa fa-check-circle"></i></div>
+        <span class="stat-value" id="stat-completion">--%</span>
+        <span class="stat-label">Completion</span>
+      </div>
+      <div class="stat-card" style="background:var(--gradient-card);">
+        <div class="stat-icon"><i class="fa fa-rupee-sign" style="color:var(--accent-2);"></i></div>
+        <span class="stat-value" id="stat-totalcost" style="font-size:22px;">₹0</span>
+        <span class="stat-label">Total Cost</span>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa fa-image"></i></div>
+        <span class="stat-value" id="stat-totalupdates">--</span>
+        <span class="stat-label">Total Updates</span>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa fa-layer-group"></i></div>
+        <span class="stat-value" id="stat-phase">--</span>
+        <span class="stat-label">Active Domain</span>
+      </div>
+    </div>
+
+    <div class="dashboard-layout">
+      <aside class="sidebar">
+        <div class="sidebar-title">Sections</div>
+        <div class="sidebar-nav">
+          <button id="sideDaily" class="sidebar-item active" onclick="showCustomerTab('updates')">
+            <i class="fa fa-clock"></i><span>Daily Updates</span>
+          </button>
+          <button id="sideEstimate" class="sidebar-item" onclick="showCustomerTab('estimate3d')">
+            <i class="fa fa-calculator"></i><span>Estimation & Images</span>
+          </button>
+          <button id="sideCalendar" class="sidebar-item" onclick="showCustomerTab('calendar')">
+            <i class="fa fa-calendar"></i><span>Calendar History</span>
+          </button>
+          <button id="sideAnalytics" class="sidebar-item" onclick="showCustomerTab('analytics')">
+            <i class="fa fa-chart-bar"></i><span>Analytics</span>
+          </button>
+          <button id="sideActivity" class="sidebar-item" onclick="showCustomerTab('activity')">
+            <i class="fa fa-bolt"></i><span>Activity Feed</span>
+          </button>
+          <button id="sideBills" class="sidebar-item" onclick="showCustomerTab('bills')">
+            <i class="fa fa-file-invoice"></i><span>Bills</span>
+          </button>
+          <button id="sideDomainStatus" class="sidebar-item" onclick="showCustomerTab('domainstatus')">
+            <i class="fa fa-layer-group"></i><span>Domain Status</span>
+          </button>
+          <button id="sideCostSummary" class="sidebar-item" onclick="showCustomerTab('costsummary')">
+            <i class="fa fa-rupee-sign"></i><span>Cost Summary</span>
+          </button>
+          <button id="sideApprovals" class="sidebar-item" onclick="showCustomerTab('approvals')">
+            <i class="fa fa-check-square"></i><span>Approvals</span>
+          </button>
+          <button id="sideTimeline" class="sidebar-item" onclick="showCustomerTab('smarttimeline')">
+            <i class="fa fa-stream"></i><span>Smart Timeline</span>
+          </button>
+          <button id="sideDocLib" class="sidebar-item" onclick="showCustomerTab('doclibrary')">
+            <i class="fa fa-folder-open"></i><span>Documents</span>
+          </button>
+          <button id="sideDelays" class="sidebar-item" onclick="showCustomerTab('delays')">
+            <i class="fa fa-triangle-exclamation"></i><span>Delays & Issues</span>
+          </button>
+        </div>
+      </aside>
+
+      <div class="main-dashboard-content">
+        <div id="smartAlertsArea" class="smart-alerts" style="margin-bottom:12px;"></div>
+
+        <input id="searchUpdates" type="text" placeholder="🔍 Search updates, dates, keywords…" oninput="renderUpdatesForCode(currentCustomerCode)"/>
+
+        <!-- Quick Domain Filters -->
+        <div class="quick-filter-row" id="domainFilterRow" style="display:none;"></div>
+
+        <!-- Daily Updates Tab -->
+        <div id="customerUpdates" class="card">
+          <h3 class="section-title"><i class="fa fa-clock"></i> Daily Work Updates</h3>
+          <p class="section-subtitle">See dates, domains, workers and photos uploaded by your builder.</p>
+          <div id="updatesTimeline"></div>
+
+          <h3 class="section-title" style="margin-top:24px;"><i class="fa fa-comments"></i> Send a Suggestion</h3>
+          <p class="section-subtitle">Pick a work date and write a short note for your builder.</p>
+          <label><i class="fa fa-calendar"></i> Work date</label>
+          <input id="suggestionDate" type="date"/>
+          <label><i class="fa fa-pencil"></i> Your suggestion</label>
+          <textarea id="customerSuggestion" placeholder="Example: For 2025‑12‑05 brickwork, please keep 3-feet window opening."></textarea>
+          <button class="btn btn-primary" onclick="sendCustomerSuggestion()"><i class="fa fa-paper-plane"></i> Send Suggestion</button>
+          <p id="suggestionStatus" style="font-size:13px;margin-top:8px;color:var(--accent-soft);font-weight:500;"></p>
+        </div>
+
+        <!-- Estimation & 3D Tab -->
+        <div id="customerEstimate3D" style="display:none;">
+          <div style="display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start;" id="estLayoutGrid">
+            <div class="card" style="margin-bottom:0;">
+              <h3 class="section-title"><i class="fa fa-calculator"></i> Estimation from Builder</h3>
+              <div id="custEstimationView" class="note-muted">No estimation received yet for this project.</div>
+              <div id="recentEstimations" style="margin-top:20px;max-height:280px;overflow-y:auto;"></div>
+              <h3 class="section-title" style="margin-top:24px;"><i class="fa fa-image"></i> Planned Images</h3>
+              <div id="cust3DView" class="note-muted">No 3D view uploaded yet for this project.</div>
+            </div>
+            <!-- Domain Total Cost Panel -->
+            <div class="card" id="domainCostPanel" style="margin-bottom:0;background:var(--gradient-card);border-color:var(--accent);position:sticky;top:90px;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                <i class="fa fa-rupee-sign" style="color:var(--accent);font-size:18px;"></i>
+                <span style="font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--text-main);">Domain Cost Tracker</span>
+              </div>
+              <div style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Active Domain</div>
+              <div id="domainCostActiveDomain" style="font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--text-main);margin-bottom:18px;padding:8px 12px;background:var(--bg-elevated);border-radius:var(--radius-sm);border:1px solid var(--border);">—</div>
+              <div style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Total Spent So Far</div>
+              <div id="domainCostAmount" style="font-family:var(--font-display);font-size:36px;font-weight:800;background:var(--gradient-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:6px;">₹ 0</div>
+              <div id="domainCostCount" class="note-muted" style="margin-bottom:18px;">0 estimations</div>
+              <div style="border-top:1px solid var(--border);padding-top:14px;">
+                <div style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">All Domains Summary</div>
+                <div id="allDomainCostBreakdown" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendar History Tab -->
+        <div id="customerCalendar" class="card" style="display:none;">
+          <h3 class="section-title"><i class="fa fa-calendar"></i> Project History</h3>
+          <p class="section-subtitle">Select a date to explore all activity recorded on that day.</p>
+          <input type="date" id="customerHistoryDate" onchange="renderCustomerHistory()"/>
+          <div class="cal-tab-group">
+            <button class="cal-tab active" id="calTabEst" onclick="switchCalTab('estimation')"><i class="fa fa-calculator"></i> Estimation</button>
+            <button class="cal-tab" id="calTab3D" onclick="switchCalTab('3d')"><i class="fa fa-image"></i> Planned Images</button>
+            <button class="cal-tab" id="calTabDaily" onclick="switchCalTab('daily')"><i class="fa fa-camera"></i> Daily Updates</button>
+          </div>
+          <!-- Estimation section -->
+          <div id="calSectionEst" class="cal-section active">
+            <div id="calEstView" class="note-muted">Select a date to see estimation entries.</div>
+          </div>
+          <!-- 3D section -->
+          <div id="calSection3D" class="cal-section">
+            <div id="cal3DView" class="note-muted">Select a date to see 3D uploads.</div>
+          </div>
+          <!-- Daily Updates section -->
+          <div id="calSectionDaily" class="cal-section">
+            <div id="calDailyView" class="note-muted">Select a date to see daily work updates.</div>
+          </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="customerAnalytics" class="card" style="display:none;">
+          <h3 class="section-title"><i class="fa fa-chart-bar"></i> Domain Analytics</h3>
+          <p class="section-subtitle">Smart insights from your project data.</p>
+          <div id="projectHealthCard"></div>
+          <div class="domain-analytics-grid" id="analyticsGrid"></div>
+          <div class="section-title" style="font-size:15px;margin-top:10px;margin-bottom:8px;"><i class="fa fa-layer-group"></i> Domain Progress Breakdown</div>
+          <div class="domain-progress-list" id="domainProgressList"></div>
+        </div>
+
+        <!-- Activity Feed Tab -->
+        <div id="customerActivity" class="card" style="display:none;">
+          <h3 class="section-title"><i class="fa fa-bolt"></i> Recent Activity Feed</h3>
+          <p class="section-subtitle">All project events in chronological order.</p>
+          <div id="activityFeedList"></div>
+        </div>
+
+        <!-- Bills Tab -->
+        <div id="customerBills" class="card" style="display:none;">
+          <h3 class="section-title"><i class="fa fa-file-invoice"></i> Construction Bills</h3>
+          <p class="section-subtitle">Material bills and construction purchase records uploaded by builder.</p>
+          <div id="customerBillsView">
+            <div class="note-muted">No bills uploaded yet.</div>
+          </div>
+        </div>
+
+        <!-- Domain Status Tab -->
+        <div id="customerDomainStatus" class="card" style="display:none;">
+          <h3 class="section-title"><i class="fa fa-layer-group"></i> Domain-wise Project Status</h3>
+          <p class="section-subtitle">Live status of each construction phase — Planned, In Progress, Completed or Delayed.</p>
+          <div id="domainStatusGrid" class="domain-status-grid"></div>
+        </div>
+
+        <!-- Cost Summary Tab -->
+        <div id="customerCostSummary" class="card" style="display:none;">
+          <h3 class="section-title"><i class="fa fa-rupee-sign"></i> Cost Summary Dashboard</h3>
+          <p class="section-subtitle">Full breakdown of estimated and spent amounts per domain.</p>
+          <div class="cost-summary-grid" id="costSummaryCards"></div>
+          <div style="overflow-x:auto;">
+            <table class="cost-table" id="costTable">
+              <thead><tr><th>Domain</th><th>Estimated (₹)</th><th>Updates</th></tr></thead>
+              <tbody id="costTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Approvals Tab (Customer) -->
+        <div id="customerApprovals" class="card" style="display:none;">
+          <h3 class="section-title"><i class="fa fa-check-square"></i> Design Approvals</h3>
+          <p class="section-subtitle">Review and approve designs, quotations and images sent by your builder.</p>
+          <div id="customerApprovalsView"><div class="note-muted">No approval requests yet.</div></div>
+        </div>
+
+        <!-- Smart Unified Timeline Tab -->
+        <div id="customerSmartTimeline" class="card" style="display:none;">
+          <h3 class="section-title"><i class="fa fa-stream"></i> Smart Unified Timeline</h3>
+          <p class="section-subtitle">Every project event — updates, bills, estimations, suggestions — in one chronological feed.</p>
+          <div id="smartTimelineView"></div>
+        </div>
+
+        <!-- Document Library Tab -->
+        <div id="customerDocLibrary" class="card" style="display:none;">
+          <h3 class="section-title"><i class="fa fa-folder-open"></i> Document Library</h3>
+          <p class="section-subtitle">Drawings, approvals and project documents uploaded by your builder.</p>
+          <div id="customerDocLibView"><div class="note-muted">No documents uploaded yet.</div></div>
+        </div>
+
+        <!-- Delays & Issues Tab -->
+        <div id="customerDelays" class="card" style="display:none;">
+          <h3 class="section-title"><i class="fa fa-triangle-exclamation"></i> Delays &amp; Issues</h3>
+          <p class="section-subtitle">Transparency alerts reported by your builder — delays, material issues or site problems.</p>
+          <div id="customerDelaysView"><div class="note-muted">No delay alerts reported.</div></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== BUILDER PORTAL ====== -->
+<section id="builder-portal" class="section" style="display:none;">
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-title"><i class="fa fa-hard-hat"></i> Builder Login</div>
+      <div class="auth-subtitle">Enter your <b>firm name / username</b> and then open any project with its 10‑digit code.</div>
+      <label><i class="fa fa-building"></i> Username</label>
+      <input id="builderName" placeholder="Builder / firm name" autocomplete="off"/>
+      <button class="btn btn-primary" onclick="loginBuilder()"><i class="fa fa-sign-in-alt"></i> Login as Builder</button>
+      <p id="builderLoginMsg" style="font-size:13px;margin-top:10px;color:var(--accent-soft);font-weight:500;"></p>
+    </div>
+  </div>
+
+  <div id="builderDashboard" style="display:none; margin-top:10px; padding-bottom:40px;">
+    <div class="section-title" style="font-size:22px;margin-bottom:4px;">
+      <i class="fa fa-tools"></i> Builder Project Dashboard
+    </div>
+    <p class="section-subtitle">Welcome, <strong id="builderNameDisplay"></strong></p>
+
+    <label><i class="fa fa-barcode"></i> Customer project code (10 digits)</label>
+    <input id="builderProjectCode" maxlength="10" placeholder="Example: 9823456712" autocomplete="off"/>
+    <button class="btn btn-primary" onclick="openBuilderProject()"><i class="fa fa-folder-open"></i> Open Project</button>
+    <p id="builderProjectMsg" style="font-size:13px;margin-top:8px;color:var(--accent-soft);font-weight:500;"></p>
+
+    <div id="builderProjectsList" class="stats-grid" style="margin-top:20px;"></div>
+
+    <div id="builderProjectArea" style="display:none; margin-top:20px;">
+      <h4 class="section-title"><i class="fa fa-building"></i> Customer Project: <span id="builderProjectCodeDisplay" class="badge-inline"></span></h4>
+
+      <div class="dashboard-layout">
+        <aside class="sidebar">
+          <div class="sidebar-title">Builder Controls</div>
+          <div class="sidebar-nav">
+            <button class="sidebar-item active" onclick="scrollBuilderSection('builder-estimation-section')"><i class="fa fa-calculator"></i><span>Estimation</span></button>
+            <button class="sidebar-item" onclick="scrollBuilderSection('builder-3d-section')"><i class="fa fa-image"></i><span>Planned Images</span></button>
+            <button class="sidebar-item" onclick="scrollBuilderSection('builder-daily-section')"><i class="fa fa-clock"></i><span>Daily Updates</span></button>
+            <button class="sidebar-item" onclick="scrollBuilderSection('builder-bills-section')"><i class="fa fa-file-invoice"></i><span>Bills Upload</span></button>
+            <button class="sidebar-item" onclick="scrollBuilderSection('builder-approval-section')"><i class="fa fa-check-square"></i><span>Approvals</span></button>
+            <button class="sidebar-item" onclick="scrollBuilderSection('builder-doclibrary-section')"><i class="fa fa-folder-open"></i><span>Documents</span></button>
+            <button class="sidebar-item" onclick="scrollBuilderSection('builder-delay-section')"><i class="fa fa-triangle-exclamation"></i><span>Delay Alert</span></button>
+            <button class="sidebar-item" onclick="scrollBuilderSection('builder-suggestion-section')"><i class="fa fa-comments"></i><span>Suggestions</span></button>
+            <button class="sidebar-item" onclick="scrollBuilderSection('builder-calendar-section')"><i class="fa fa-calendar"></i><span>Calendar</span></button>
+          </div>
+        </aside>
+
+        <div class="main-dashboard-content">
+
+          <!-- STEP 2 — Estimation with Domain -->
+          <div class="card" id="builder-estimation-section">
+            <h3 class="section-title"><i class="fa fa-calculator"></i> Estimation</h3>
+            <label><i class="fa fa-layer-group"></i> Select Work Domain</label>
+            <select id="estDomain"><option value="">Select Domain</option></select>
+            <label><i class="fa fa-rupee-sign"></i> Total estimated amount (₹)</label>
+            <input id="estAmount" type="number" min="0" placeholder="Example: 2500000"/>
+            <label><i class="fa fa-sticky-note"></i> Estimation notes</label>
+            <textarea id="estNotes" placeholder="Example: Includes structure, finishes and labour. Excludes approvals."></textarea>
+            <button class="btn btn-primary" onclick="saveEstimation()"><i class="fa fa-paper-plane"></i> Send Estimation to Customer</button>
+            <p id="estStatus" style="font-size:13px;margin-top:8px;color:var(--accent-soft);font-weight:500;"></p>
+          </div>
+
+          <!-- 3D Upload -->
+          <div class="card" id="builder-3d-section">
+            <h3 class="section-title"><i class="fa fa-image"></i> Planned Image Upload</h3>
+            <div class="upload-zone" id="threeDUploadZone" onclick="$('threeDFile').click()" 
+                 ondragover="handleDragOver(event,'threeDUploadZone')" 
+                 ondragleave="handleDragLeave(event,'threeDUploadZone')" 
+                 ondrop="handleDrop(event,'threeDFile','threed')">
+              <i class="fa fa-cloud-upload-alt"></i>
+              <span>Click or drag &amp; drop planned images</span>
+              <div class="upload-hint">Supports JPG, PNG, WEBP · Multiple files allowed</div>
+            </div>
+            <input id="threeDFile" type="file" accept="image/*" multiple onchange="handleFileSelect(this,'threed')"/>
+            <div id="threed-preview-grid" class="file-preview-grid"></div>
+            <div id="threed-file-tags" class="selected-files-list"></div>
+            <label style="margin-top:16px;"><i class="fa fa-sticky-note"></i> Short description</label>
+            <textarea id="threeDDesc" placeholder="Example: Exterior 3D with north-facing entrance."></textarea>
+            <button class="btn btn-primary" onclick="save3DView()"><i class="fa fa-paper-plane"></i> Send Planned Images to Customer</button>
+            <p id="threeDStatus" style="font-size:13px;margin-top:8px;color:var(--accent-soft);font-weight:500;"></p>
+          </div>
+
+          <!-- STEP 5+6 — Daily Update with Domain + Workers -->
+          <div class="card" id="builder-daily-section">
+            <h3 class="section-title"><i class="fa fa-camera"></i> Daily Work Upload</h3>
+            <label><i class="fa fa-layer-group"></i> Select Work Domain</label>
+            <select id="dailyDomain"><option value="">Select Domain</option></select>
+            <label><i class="fa fa-calendar"></i> Date of work</label>
+            <input id="updDate" type="date"/>
+            <label><i class="fa fa-pencil"></i> Work description</label>
+            <textarea id="updText" placeholder="Example: Completed brickwork for ground floor and started RCC column shuttering."></textarea>
+            <label><i class="fa fa-tasks"></i> Work Status (DPR)</label>
+            <select id="dailyStatus">
+              <option value="Planned">📋 Planned</option>
+              <option value="Doing" selected>🔧 Doing</option>
+              <option value="Completed">✅ Completed</option>
+            </select>
+            <label><i class="fa fa-users"></i> Number of Workers</label>
+            <input id="dailyWorkers" type="number" min="0" placeholder="Example: 12"/>
+            <label for="updImageFile" class="upload-zone" id="dailyUploadZone" onclick="$('updImageFile').click()" 
+                   ondragover="handleDragOver(event,'dailyUploadZone')" 
+                   ondragleave="handleDragLeave(event,'dailyUploadZone')"
+                   ondrop="handleDrop(event,'updImageFile','daily')" style="display:block;">
+              <i class="fa fa-camera" style="font-size:22px;color:var(--accent);margin-bottom:6px;display:block;"></i>
+              <span style="color:var(--text-muted);font-size:13px;font-weight:600;">Click or drag &amp; drop site photos</span>
+              <div class="upload-hint">Multiple photos allowed · JPG, PNG, WEBP</div>
+            </label>
+            <input id="updImageFile" type="file" accept="image/*" multiple onchange="handleFileSelect(this,'daily')"/>
+            <div id="daily-preview-grid" class="file-preview-grid"></div>
+            <div id="daily-file-tags" class="selected-files-list"></div>
+            <button class="btn btn-primary" onclick="saveDailyUpdate()"><i class="fa fa-paper-plane"></i> Upload Today's Work</button>
+            <p id="updStatus" style="font-size:13px;margin-top:8px;color:var(--accent-soft);font-weight:500;"></p>
+          </div>
+
+
+          <!-- Bills Upload -->
+          <div class="card" id="builder-bills-section">
+            <h3 class="section-title"><i class="fa fa-file-invoice"></i> Bills Upload</h3>
+            <label><i class="fa fa-layer-group"></i> Select Domain</label>
+            <select id="billDomain"><option value="">Select Domain</option></select>
+            <label><i class="fa fa-calendar"></i> Bill Date</label>
+            <input id="billDate" type="date"/>
+            <label><i class="fa fa-sticky-note"></i> Bill Description</label>
+            <textarea id="billDesc" placeholder="Example: Cement purchase bill for slab work"></textarea>
+            <label class="upload-zone" onclick="$('billFile').click()">
+              <i class="fa fa-file-upload"></i>
+              <span>Upload Bill Files</span>
+            </label>
+            <input id="billFile" type="file" multiple accept="image/*,.pdf"/>
+            <button class="btn btn-primary" onclick="saveBillUpload()">
+              <i class="fa fa-paper-plane"></i> Upload Bills
+            </button>
+            <p id="billStatus" style="font-size:13px;margin-top:8px;color:var(--accent-soft);font-weight:500;"></p>
+          </div>
+
+          <!-- Approval Upload (Builder) -->
+          <div class="card" id="builder-approval-section">
+            <h3 class="section-title"><i class="fa fa-check-square"></i> Send for Customer Approval</h3>
+            <p class="section-subtitle">Upload designs, planned images or quotations for customer to approve or reject.</p>
+            <label><i class="fa fa-tag"></i> Approval Title</label>
+            <input id="aprTitle" placeholder="Example: Kitchen tile design, Floor plan revision"/>
+            <label><i class="fa fa-layer-group"></i> Related Domain</label>
+            <select id="aprDomain"><option value="">Select Domain</option></select>
+            <label><i class="fa fa-align-left"></i> Description</label>
+            <textarea id="aprDesc" placeholder="Example: Proposed Italian marble tiles for kitchen floor. 2 ft × 2 ft size."></textarea>
+            <div class="approval-type-selector">
+              <button class="apr-type-btn active" id="aprTypeDesign" onclick="setAprType('Design')">🎨 Design</button>
+              <button class="apr-type-btn" id="aprTypeQuotation" onclick="setAprType('Quotation')">💰 Quotation</button>
+              <button class="apr-type-btn" id="aprTypeDrawing" onclick="setAprType('Drawing')">📐 Drawing</button>
+              <button class="apr-type-btn" id="aprTypeMaterial" onclick="setAprType('Material')">🧱 Material</button>
+            </div>
+            <input type="hidden" id="aprTypeValue" value="Design"/>
+            <div class="upload-zone" onclick="$('aprFile').click()">
+              <i class="fa fa-cloud-upload-alt"></i>
+              <span>Upload Images / PDFs for approval</span>
+              <div class="upload-hint">JPG, PNG, PDF supported</div>
+            </div>
+            <input id="aprFile" type="file" multiple accept="image/*,.pdf"/>
+            <button class="btn btn-primary" onclick="saveApprovalRequest()"><i class="fa fa-paper-plane"></i> Send for Approval</button>
+            <p id="aprStatus" style="font-size:13px;margin-top:8px;color:var(--accent-soft);font-weight:500;"></p>
+          </div>
+
+          <!-- Document Library Upload (Builder) -->
+          <div class="card" id="builder-doclibrary-section">
+            <h3 class="section-title"><i class="fa fa-folder-open"></i> Document Library</h3>
+            <p class="section-subtitle">Upload structural drawings, government approvals, electrical layouts and other documents.</p>
+            <label><i class="fa fa-file-alt"></i> Document Name</label>
+            <input id="docLibName" placeholder="Example: Structural Drawing - Ground Floor"/>
+            <label><i class="fa fa-tag"></i> Document Category</label>
+            <select id="docLibCategory">
+              <option value="Structural Drawing">📐 Structural Drawing</option>
+              <option value="Electrical Layout">⚡ Electrical Layout</option>
+              <option value="Plumbing Layout">🔧 Plumbing Layout</option>
+              <option value="Government Approval">🏛 Government Approval</option>
+              <option value="3D Render">🖼 3D Render</option>
+              <option value="Other">📄 Other</option>
+            </select>
+            <div class="doc-upload-area" onclick="$('docLibFile').click()">
+              <i class="fa fa-file-upload"></i>
+              <span>Upload Document (PDF, Image)</span>
+            </div>
+            <input id="docLibFile" type="file" accept="image/*,.pdf"/>
+            <button class="btn btn-primary" onclick="saveDocLibUpload()"><i class="fa fa-paper-plane"></i> Upload Document</button>
+            <p id="docLibStatus" style="font-size:13px;margin-top:8px;color:var(--accent-soft);font-weight:500;"></p>
+          </div>
+
+          <!-- Delay / Issue Alert (Builder) -->
+          <div class="card" id="builder-delay-section">
+            <h3 class="section-title"><i class="fa fa-triangle-exclamation"></i> Report Delay / Issue</h3>
+            <p class="section-subtitle">Transparently inform the customer about any delay or site issue.</p>
+            <label><i class="fa fa-layer-group"></i> Affected Domain</label>
+            <select id="delayDomain"><option value="">Select Domain</option></select>
+            <label><i class="fa fa-calendar"></i> Date of Issue</label>
+            <input id="delayDate" type="date"/>
+            <label><i class="fa fa-exclamation-circle"></i> Issue / Delay Reason</label>
+            <textarea id="delayReason" placeholder="Example: Granite delivery delayed due to transport strike. Expected in 3 days."></textarea>
+            <button class="btn btn-primary" onclick="saveDelayAlert()"><i class="fa fa-bell"></i> Send Alert to Customer</button>
+            <p id="delayAlertStatus" style="font-size:13px;margin-top:8px;color:var(--accent-soft);font-weight:500;"></p>
+          </div>
+
+          <!-- Customer Suggestions View -->
+          <div class="card" id="builder-suggestion-section">
+            <h3 class="section-title"><i class="fa fa-comments"></i> Customer Suggestions</h3>
+            <div id="builderSuggestionsView" class="note-muted">No suggestions received yet from customer.</div>
+          </div>
+
+          <!-- Builder Calendar -->
+          <div class="card" id="builder-calendar-section">
+            <h3 class="section-title"><i class="fa fa-calendar"></i> Work History Calendar</h3>
+            <p class="section-subtitle">Select a date to view all activity recorded on that day.</p>
+            <input type="date" id="builderHistoryDate" onchange="renderBuilderHistory()"/>
+            <div id="builderHistoryView" class="note-muted" style="margin-top:16px;">Select a date to view history.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2025 B2C · Smart Construction Progress Platform<br>
+  <span style="color:var(--accent);font-weight:600;">Domain-based tracking · Real-time updates · PDF reports</span>
+</footer>
+
+<!-- Lightbox -->
+<div id="imgLightbox" onclick="closeLightbox()">
+  <div class="close-lb" onclick="closeLightbox()"><i class="fa fa-times"></i></div>
+  <img id="lightboxImg" src="" alt="Preview"/>
+</div>
+
+<script>
+  // ===== HELPER =====
+  function $(id){ return document.getElementById(id); }
+  let lastPortal = 'customer';
+
+  // STEP 1 — Central Domain Array
+  const DOMAINS = [
+    "Planning & Designing",
+    "Excavation & Foundation",
+    "RCC Structural Work",
+    "Brick Work",
+    "Electrical & Plumbing",
+    "Plastering & Flooring",
+    "Painting & Interior"
+  ];
+
+  // Storage Keys
+  const updatesKey  = code => "b2c_updates_"     + code;
+  const estKey      = code => "b2c_est_"          + code;
+  const threeDKey   = code => "b2c_3d_"           + code;
+  const suggKey     = code => "b2c_suggestions_"  + code;
+  const historyKey  = code => "b2c_history_"      + code;
+  const billsKey      = code => "b2c_bills_"         + code;
+  const approvalsKey  = code => "b2c_approvals_"     + code;
+  const docLibKey     = code => "b2c_doclibrary_"    + code;
+  const delaysKey     = code => "b2c_delays_"        + code;
+
+  // =====================================================================================
+  // Cloud-first storage policy:
+  // - Project data must NOT persist in localStorage (breaks cross-device sync).
+  // - Only auth tokens + lightweight session hints may use localStorage.
+  //
+  // To avoid a risky full rewrite of this single-file SPA, we intercept localStorage
+  // reads/writes for project-data keys and keep them in an in-memory cache instead.
+  // The source of truth becomes the backend (Express → Supabase). The cache is re-hydrated
+  // via syncProjectToLocal() after login/open and on session restore.
+  // =====================================================================================
+  const B2C_PROJECT_KEY_PREFIXES = [
+    'b2c_updates_',
+    'b2c_est_',
+    'b2c_3d_',
+    'b2c_suggestions_',
+    'b2c_history_',
+    'b2c_bills_',
+    'b2c_approvals_',
+    'b2c_doclibrary_',
+    'b2c_delays_'
+  ];
+  const _b2cProjectMem = new Map(); // key -> string value
+  const _b2cIsProjectKey = (key) => {
+    const k = String(key || '');
+    return B2C_PROJECT_KEY_PREFIXES.some((p) => k.startsWith(p));
+  };
+  (function installB2CProjectStorageShim(){
+    try {
+      const _getItem = Storage.prototype.getItem;
+      const _setItem = Storage.prototype.setItem;
+      const _removeItem = Storage.prototype.removeItem;
+      Storage.prototype.getItem = function(key){
+        if (this === window.localStorage && _b2cIsProjectKey(key)) return _b2cProjectMem.get(String(key)) ?? null;
+        return _getItem.call(this, key);
+      };
+      Storage.prototype.setItem = function(key, value){
+        if (this === window.localStorage && _b2cIsProjectKey(key)) { _b2cProjectMem.set(String(key), String(value)); return; }
+        return _setItem.call(this, key, value);
+      };
+      Storage.prototype.removeItem = function(key){
+        if (this === window.localStorage && _b2cIsProjectKey(key)) { _b2cProjectMem.delete(String(key)); return; }
+        return _removeItem.call(this, key);
+      };
+    } catch(e) {
+      console.warn('Project storage shim could not be installed:', e);
+    }
+  })();
+
+  // Session hints (allowed in localStorage)
+  const B2C_LAST_CUSTOMER_CODE_KEY = 'b2c_last_customer_code';
+  const B2C_LAST_BUILDER_PROJECT_KEY = 'b2c_last_builder_project';
+
+  let currentCustomerCode  = null;
+  let builderLoggedIn      = false;
+  let currentBuilderProject= null;
+  let domainChart          = null;
+
+  // ===== THEME =====
+  function toggleTheme(){
+    const html = document.documentElement;
+    const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', next);
+    $('themeLabel').textContent = next === 'light' ? 'Light' : 'Dark';
+  }
+
+  // ===== STEP 2 — Load Domain Options =====
+  function loadDomainOptions(){
+    const ids = ['estDomain','dailyDomain','billDomain','aprDomain','delayDomain'];
+    ids.forEach(id => {
+      const select = document.getElementById(id);
+      if(!select) return;
+      if(select.options.length > 1) return;
+      DOMAINS.forEach(domain => {
+        const option = document.createElement('option');
+        option.value = domain;
+        option.textContent = domain;
+        select.appendChild(option);
+      });
+    });
+  }
+
+  // ===== STEP 10 — Fixed saveHistory (timezone safe) =====
+  function saveHistory(code, type, message){
+    const key = historyKey(code);
+    let history = JSON.parse(localStorage.getItem(key) || "[]");
+    const now = new Date();
+    const localDate =
+      now.getFullYear() + "-" +
+      String(now.getMonth()+1).padStart(2,'0') + "-" +
+      String(now.getDate()).padStart(2,'0');
+    history.push({
+      type,
+      message,
+      timestamp: now.toLocaleString(),
+      date: localDate
+    });
+    localStorage.setItem(key, JSON.stringify(history));
+  }
+
+  // ===== XSS Protection =====
+  function escapeHtml(str){
+    if(typeof str !== 'string') return '';
+    return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]||m);
+  }
+
+  // ===== NOTIFICATIONS =====
+  function showNotification(msg, time=2400){
+    const box = $('notificationBox');
+    box.innerHTML = '<i class="fa fa-bell"></i> ' + msg;
+    box.style.display = 'block';
+    setTimeout(() => { box.style.display = 'none'; }, time);
+  }
+
+  // ===== MOBILE SIDEBAR =====
+  window.addEventListener('DOMContentLoaded', function(){
+    loadDomainOptions();
+    if($('menuBtn')) $('menuBtn').onclick = function(){
+      document.querySelectorAll('.sidebar').forEach(s => s.classList.toggle('open'));
+    };
+  });
+
+  // ===== SCROLL HELPERS =====
+  function scrollToEl(el){ if(!el) return; requestAnimationFrame(()=> el.scrollIntoView({behavior:'smooth',block:'start'})); }
+  function scrollBuilderSection(id){ const s = document.getElementById(id); if(s) s.scrollIntoView({behavior:'smooth',block:'start'}); }
+  function scrollToPortals(){ $('portal-section').scrollIntoView({behavior:'smooth'}); }
+  function openCustomerLoginAndScroll(){ lastPortal='customer'; openCustomerLogin(); scrollToEl($('customer-login')); }
+  function openBuilderLoginAndScroll(){ lastPortal='builder'; openBuilderLogin(); scrollToEl($('builder-portal')); }
+  function openCustomerFromHero(){ scrollToPortals(); resetBuilderState(); openCustomerLoginAndScroll(); }
+  function openBuilderFromHero(){ scrollToPortals(); resetCustomerState(); openBuilderLoginAndScroll(); }
+
+  // ===== RESET =====
+  function resetCustomerState(){
+    currentCustomerCode = null;
+    try { localStorage.removeItem(B2C_LAST_CUSTOMER_CODE_KEY); } catch(e){}
+    $('customer-portal').style.display = 'none';
+    $('customer-dashboard').style.display = 'none';
+  }
+  function resetBuilderState(){
+    builderLoggedIn = false; currentBuilderProject = null;
+    try { localStorage.removeItem(B2C_LAST_BUILDER_PROJECT_KEY); } catch(e){}
+    $('builder-portal').style.display = 'none';
+    $('builderDashboard').style.display = 'none';
+    $('builderProjectArea').style.display = 'none';
+  }
+
+  // ===== CUSTOMER FLOW =====
+  function openCustomerLogin(){
+    $('customer-portal').style.display = 'block';
+    $('builder-portal').style.display = 'none';
+    $('custCodeInput').value = '';
+    $('custLoginMsg').textContent = '';
+    $('customer-dashboard').style.display = 'none';
+  }
+
+  function enterCustomerPortal(){
+    const code = $('custCodeInput').value.trim();
+    const danger = getComputedStyle(document.documentElement).getPropertyValue('--danger');
+    if(code.length !== 10 || !/^\d+$/.test(code)){
+      $('custLoginMsg').style.color = danger;
+      $('custLoginMsg').textContent = 'Please enter a valid 10‑digit number.'; return;
+    }
+    currentCustomerCode = code;
+    $('custLoginMsg').style.color = 'var(--success)';
+    $('custLoginMsg').textContent = 'Login successful. Opening your dashboard…';
+    $('customer-dashboard').style.display = 'block';
+    $('custCodeDisplay').textContent = code;
+    showCustomerTab('updates');
+    renderStatsDashboard();
+    renderUpdatesForCode(code);
+    renderCustomerEstimation();
+    renderCustomer3D();
+    renderPhases();
+    renderMilestoneTimeline();
+    renderSmartAlerts();
+    renderQuickFilters();
+    scrollToEl($('customer-dashboard'));
+    showNotification('Logged in as customer.');
+  }
+
+  function setSidebarActive(which){
+    ['sideDaily','sideEstimate','sideCalendar','sideAnalytics','sideActivity','sideBills',
+     'sideDomainStatus','sideCostSummary','sideApprovals','sideTimeline','sideDocLib','sideDelays'
+    ].forEach(id => $(id) && $(id).classList.remove('active'));
+    if(which === 'updates') $('sideDaily') && $('sideDaily').classList.add('active');
+    else if(which === 'estimate3d') $('sideEstimate') && $('sideEstimate').classList.add('active');
+    else if(which === 'calendar') $('sideCalendar') && $('sideCalendar').classList.add('active');
+    else if(which === 'analytics') $('sideAnalytics') && $('sideAnalytics').classList.add('active');
+    else if(which === 'activity') $('sideActivity') && $('sideActivity').classList.add('active');
+    else if(which === 'bills') $('sideBills') && $('sideBills').classList.add('active');
+    else if(which === 'domainstatus') $('sideDomainStatus') && $('sideDomainStatus').classList.add('active');
+    else if(which === 'costsummary') $('sideCostSummary') && $('sideCostSummary').classList.add('active');
+    else if(which === 'approvals') $('sideApprovals') && $('sideApprovals').classList.add('active');
+    else if(which === 'smarttimeline') $('sideTimeline') && $('sideTimeline').classList.add('active');
+    else if(which === 'doclibrary') $('sideDocLib') && $('sideDocLib').classList.add('active');
+    else if(which === 'delays') $('sideDelays') && $('sideDelays').classList.add('active');
+  }
+
+  function showCustomerTab(which){
+    const allTabs = ['customerUpdates','customerEstimate3D','customerCalendar','customerAnalytics',
+      'customerActivity','customerBills','customerDomainStatus','customerCostSummary',
+      'customerApprovals','customerSmartTimeline','customerDocLibrary','customerDelays'];
+    allTabs.forEach(id => { const el = $(id); if(el) el.style.display = 'none'; });
+    const filterRow = $('domainFilterRow');
+    if(filterRow) filterRow.style.display = 'none';
+    if(which === 'updates'){
+      $('customerUpdates').style.display = 'block';
+      if(filterRow) filterRow.style.display = 'flex';
+    } else if(which === 'estimate3d'){
+      $('customerEstimate3D').style.display = 'block';
+      renderDomainCostPanel();
+    } else if(which === 'calendar'){
+      $('customerCalendar').style.display = 'block';
+    } else if(which === 'analytics'){
+      if($('customerAnalytics')) $('customerAnalytics').style.display = 'block';
+      renderDomainAnalytics();
+    } else if(which === 'activity'){
+      if($('customerActivity')) $('customerActivity').style.display = 'block';
+      renderActivityFeed();
+    } else if(which === 'bills'){
+      if($('customerBills')) $('customerBills').style.display = 'block';
+      renderBillsForCustomer();
+    } else if(which === 'domainstatus'){
+      if($('customerDomainStatus')) $('customerDomainStatus').style.display = 'block';
+      renderDomainStatusGrid();
+    } else if(which === 'costsummary'){
+      if($('customerCostSummary')) $('customerCostSummary').style.display = 'block';
+      renderCostSummary();
+    } else if(which === 'approvals'){
+      if($('customerApprovals')) $('customerApprovals').style.display = 'block';
+      renderCustomerApprovals();
+    } else if(which === 'smarttimeline'){
+      if($('customerSmartTimeline')) $('customerSmartTimeline').style.display = 'block';
+      renderSmartUnifiedTimeline();
+    } else if(which === 'doclibrary'){
+      if($('customerDocLibrary')) $('customerDocLibrary').style.display = 'block';
+      renderDocLibraryForCustomer();
+    } else if(which === 'delays'){
+      if($('customerDelays')) $('customerDelays').style.display = 'block';
+      renderDelaysForCustomer();
+    }
+    setSidebarActive(which);
+  }
+
+  // ===== STEP 12 — renderPhases (domain-based) =====
+  function renderPhases(){
+    const logs = JSON.parse(localStorage.getItem(updatesKey(currentCustomerCode)) || '[]');
+    let html = '';
+    DOMAINS.forEach(domain => {
+      const exists = logs.some(l => l.domain === domain);
+      html += `<div class="phase ${exists ? 'completed' : ''}">${domain}</div>`;
+    });
+    $('phaseTracker').innerHTML = html;
+  }
+
+  // ===== STEP 13 — Real completion % + Total Cost =====
+  function renderStatsDashboard(){
+    if(!currentCustomerCode) return;
+    const logs = JSON.parse(localStorage.getItem(updatesKey(currentCustomerCode)) || '[]');
+
+    // Real domain-based completion
+    const completedDomains = new Set(logs.map(l => l.domain)).size;
+    const completion = Math.round((completedDomains / DOMAINS.length) * 100);
+
+    const activeDomains = [...new Set(logs.map(l => l.domain))];
+    const currentDomain = activeDomains[activeDomains.length - 1] || '--';
+
+    $('stat-completion').textContent = isNaN(completion) ? '0%' : (completion + '%');
+    $('progressFill').style.width = completion + '%';
+    if($('progressPct')) $('progressPct').textContent = completion + '%';
+    $('stat-totalupdates').textContent = logs.length || '0';
+    $('stat-phase').textContent = currentDomain.length > 14 ? currentDomain.substring(0,12)+'…' : currentDomain;
+
+    // Total cost from estimation array
+    let totalCost = 0;
+    try {
+      const raw = localStorage.getItem(estKey(currentCustomerCode));
+      if(raw) {
+        const estArr = JSON.parse(raw);
+        const arr = Array.isArray(estArr) ? estArr : [estArr];
+        arr.forEach(e => { if(e && e.amount) totalCost += Number(e.amount) || 0; });
+      }
+    } catch(e){ totalCost = 0; }
+    const statCost = $('stat-totalcost');
+    if(statCost) statCost.textContent = totalCost ? '₹' + totalCost.toLocaleString('en-IN') : '₹0';
+
+    renderPhases();
+    renderDomainDays();
+    renderDomainChart();
+    renderDomainCostPanel();
+    renderMilestoneTimeline();
+    renderSmartAlerts();
+    renderQuickFilters();
+  }
+
+  // ===== STEP 8 — renderUpdatesForCode with domain+workers+multi-images+DPR status =====
+  let _activeDomainFilter = 'All';
+  async function renderUpdatesForCode(code){
+    const container = $('updatesTimeline');
+    container.innerHTML = '<div class="note-muted"><i class="fa fa-spinner fa-spin"></i> Loading updates…</div>';
+    let raw = localStorage.getItem(updatesKey(code));
+    let logs = raw ? JSON.parse(raw) : [];
+    const search = ($('searchUpdates') && $('searchUpdates').value || '').toLowerCase();
+    if(search){
+      logs = logs.filter(log =>
+        (log.date && log.date.toLowerCase().includes(search)) ||
+        (log.text && log.text.toLowerCase().includes(search)) ||
+        (log.domain && log.domain.toLowerCase().includes(search))
+      );
+    }
+    if(_activeDomainFilter && _activeDomainFilter !== 'All'){
+      logs = logs.filter(log => log.domain === _activeDomainFilter);
+    }
+    if(logs.length === 0){
+      container.innerHTML = "<p class='note-muted'>No updates available yet. Your builder will upload day-to-day work here with photos.</p>";
+      return;
+    }
+    container.innerHTML = '';
+    for(const log of [...logs].reverse()){
+      const div = document.createElement('div');
+      div.className = 'timeline-item';
+      // Resolve images from IDB or legacy base64
+      const rawImgs = (log.images && log.images.length) ? log.images : (log.imageDataUrl ? [log.imageDataUrl] : []);
+      const resolvedImgs = await resolveImageSources(rawImgs);
+      const dpr = log.dprStatus || 'Doing';
+      const badgeCls = dpr === 'Completed' ? 'badge-completed' : dpr === 'Planned' ? 'badge-planned' : 'badge-doing';
+      const badgeIcon = dpr === 'Completed' ? 'fa-check-circle' : dpr === 'Planned' ? 'fa-clock' : 'fa-hammer';
+      const imgHtml = resolvedImgs.length ? `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">${resolvedImgs.map((item,i)=>`
+        <div class="photo-wrap">
+          <img src="${item.url}" alt="Photo ${i+1}" onclick="openLightbox(this.src)">
+          <div class="photo-meta">
+            <span><i class="fa fa-calendar" style="color:var(--accent);"></i> ${escapeHtml(log.date||'')}</span>
+            <span><i class="fa fa-layer-group" style="color:var(--accent-2);"></i> ${escapeHtml(log.domain||'General')}</span>
+            <span><i class="fa fa-circle-check" style="color:var(--success);"></i> ${escapeHtml(dpr)}</span>
+          </div>
+        </div>`).join('')}</div>` : '';
+      div.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
+          <div class="update-date" style="margin-bottom:0;"><i class="fa fa-calendar-day"></i> ${escapeHtml(log.date)}</div>
+          <span class="status-badge ${badgeCls}"><i class="fa ${badgeIcon}"></i> ${escapeHtml(dpr)}</span>
+        </div>
+        <div><strong>Domain:</strong> ${escapeHtml(log.domain || 'General')}</div>
+        <div><strong>Workers:</strong> ${escapeHtml(String(log.workers || '0'))}</div>
+        <div style="margin-top:4px;">${escapeHtml(log.text)}</div>
+        ${imgHtml}
+      `;
+      container.appendChild(div);
+    }
+  }
+
+  // ===== STEP 14 — Domain Working Days =====
+  function renderDomainDays(){
+    const logs = JSON.parse(localStorage.getItem(updatesKey(currentCustomerCode)) || '[]');
+    let html = '';
+    DOMAINS.forEach(domain => {
+      const domainLogs = logs.filter(l => l.domain === domain);
+      if(domainLogs.length){
+        html += `
+          <div class="timeline-item" style="margin-bottom:8px;">
+            <strong>${domain}</strong>
+            <div class="note-muted">Work active over <strong>${domainLogs.length}</strong> day${domainLogs.length !== 1 ? 's' : ''}</div>
+          </div>
+        `;
+      }
+    });
+    $('domainDaysInfo').innerHTML = html;
+  }
+
+  // ===== STEP 15 — Domain Pie Chart =====
+  function renderDomainChart(){
+    const logs = JSON.parse(localStorage.getItem(updatesKey(currentCustomerCode)) || '[]');
+    const counts = DOMAINS.map(domain => logs.filter(l => l.domain === domain).length);
+
+    // Only show chart if there's data
+    const hasData = counts.some(c => c > 0);
+    if($('pieChartCard')) $('pieChartCard').style.display = hasData ? '' : 'none';
+    if(!hasData) return;
+
+    const ctx = document.getElementById('domainPieChart');
+    if(domainChart){ domainChart.destroy(); }
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    domainChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: DOMAINS,
+        datasets: [{
+          data: counts,
+          backgroundColor: [
+            '#c8622a','#2a7c6f','#e8a066','#3aaf9b',
+            '#d45f8a','#6b8fd6','#b5a23c'
+          ],
+          borderColor: isDark ? '#1a1a28' : '#ffffff',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              color: isDark ? '#f0ede8' : '#1a1a2e',
+              padding: 12, font: { size: 11, family: 'DM Sans' }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // ===== CUSTOMER SUGGESTION =====
+  function sendCustomerSuggestion(){
+    const msg = $('customerSuggestion').value.trim();
+    const date = $('suggestionDate').value;
+    const status = $('suggestionStatus');
+    const danger = getComputedStyle(document.documentElement).getPropertyValue('--danger');
+    if(!currentCustomerCode){ status.style.color=danger; status.textContent='Enter your project code first.'; return; }
+    if(!date){ status.style.color=danger; status.textContent='Select the work date for your suggestion.'; return; }
+    if(!msg){ status.style.color=danger; status.textContent='Write your suggestion before sending.'; return; }
+    if(msg.length > 500){ status.style.color=danger; status.textContent='Suggestion too long.'; return; }
+    const key = suggKey(currentCustomerCode);
+    const list = JSON.parse(localStorage.getItem(key) || "[]");
+    list.push({ time: new Date().toISOString(), date, message: escapeHtml(msg) });
+    localStorage.setItem(key, JSON.stringify(list));
+    saveHistory(currentCustomerCode, 'Suggestion', msg);
+    status.style.color = 'var(--success)';
+    status.textContent = 'Your suggestion has been sent to the builder.';
+    $('customerSuggestion').value = '';
+    showNotification("Suggestion sent!");
+  }
+
+  // ===== STEP 4 — renderCustomerEstimation with array storage =====
+  function renderCustomerEstimation(){
+    if(!currentCustomerCode) return;
+    const view = $('custEstimationView');
+    const raw = localStorage.getItem(estKey(currentCustomerCode));
+    if(!raw){ view.textContent = 'No estimation received yet for this project.'; return; }
+    let estArr = [];
+    try {
+      const parsed = JSON.parse(raw);
+      estArr = Array.isArray(parsed) ? parsed : [parsed];
+    } catch(e){ view.textContent='Could not load estimation.'; return; }
+    if(!estArr.length){ view.textContent='No estimation received yet.'; return; }
+
+    // Show latest entry prominently
+    const latest = estArr[estArr.length - 1];
+    view.innerHTML = `
+      <div class="timeline-item" style="border-left-color:var(--accent-2);">
+        <div class="update-date"><i class="fa fa-tag"></i> Latest Entry</div>
+        <div><strong>Domain:</strong> ${escapeHtml(latest.domain || 'General')}</div>
+        <div><strong>Amount:</strong> <span style="font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--accent);">₹ ${Number(latest.amount||0).toLocaleString('en-IN')}</span></div>
+        <div><strong>Notes:</strong> ${escapeHtml(latest.notes || '—')}</div>
+        <div class="note-muted">Added: ${latest.time ? new Date(latest.time).toLocaleString() : '—'}</div>
+      </div>
+    `;
+    renderRecentEstimations(estArr);
+    renderDomainCostPanel();
+  }
+
+  // ===== STEP 16 — Estimation history list =====
+  function renderRecentEstimations(estArr){
+    if(!estArr) {
+      try {
+        const raw = localStorage.getItem(estKey(currentCustomerCode));
+        const parsed = JSON.parse(raw||'[]');
+        estArr = Array.isArray(parsed) ? parsed : [parsed];
+      } catch(e){ estArr = []; }
+    }
+    if(!estArr.length){ $('recentEstimations').innerHTML = ''; return; }
+    $('recentEstimations').innerHTML = '<h4 class="section-title" style="font-size:15px;margin-bottom:10px;"><i class="fa fa-history"></i> All Estimation History</h4>' +
+      [...estArr].reverse().map(item => `
+        <div class="timeline-item">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <strong>${escapeHtml(item.domain || 'General')}</strong>
+            <span style="font-family:var(--font-display);font-size:16px;font-weight:800;color:var(--accent);">₹ ${Number(item.amount||0).toLocaleString('en-IN')}</span>
+          </div>
+          ${item.notes ? `<div style="margin-top:3px;font-size:13px;">${escapeHtml(item.notes)}</div>` : ''}
+          <div class="note-muted">${item.date || ''} · ${item.time ? new Date(item.time).toLocaleTimeString() : ''}</div>
+        </div>
+      `).join('');
+  }
+
+  // ===== Domain Cost Panel =====
+  function renderDomainCostPanel(){
+    if(!currentCustomerCode) return;
+    const logs = JSON.parse(localStorage.getItem(updatesKey(currentCustomerCode)) || '[]');
+    const activeDomains = [...new Set(logs.map(l => l.domain))];
+    const currentDomain = activeDomains[activeDomains.length - 1] || null;
+
+    let estArr = [];
+    try {
+      const raw = localStorage.getItem(estKey(currentCustomerCode));
+      if(raw){ const p = JSON.parse(raw); estArr = Array.isArray(p) ? p : [p]; }
+    } catch(e){ estArr = []; }
+
+    // Active domain total
+    const panel = $('domainCostPanel');
+    const domainEl = $('domainCostActiveDomain');
+    const amountEl = $('domainCostAmount');
+    const countEl = $('domainCostCount');
+    const breakdown = $('allDomainCostBreakdown');
+    if(!panel) return;
+
+    if(currentDomain){
+      const domainEntries = estArr.filter(e => e.domain === currentDomain);
+      const domainTotal = domainEntries.reduce((sum, e) => sum + (Number(e.amount)||0), 0);
+      if(domainEl) domainEl.textContent = currentDomain;
+      if(amountEl) amountEl.textContent = '₹ ' + domainTotal.toLocaleString('en-IN');
+      if(countEl) countEl.textContent = domainEntries.length + ' estimation' + (domainEntries.length !== 1 ? 's' : '');
+    } else {
+      if(domainEl) domainEl.textContent = '—';
+      if(amountEl) amountEl.textContent = '₹ 0';
+      if(countEl) countEl.textContent = 'No data yet';
+    }
+
+    // All domains breakdown
+    if(breakdown){
+      const domainMap = {};
+      estArr.forEach(e => { if(!domainMap[e.domain]) domainMap[e.domain] = 0; domainMap[e.domain] += Number(e.amount)||0; });
+      const entries = Object.entries(domainMap);
+      if(!entries.length){ breakdown.innerHTML = '<div class="note-muted" style="font-size:12px;">No estimations yet.</div>'; return; }
+      breakdown.innerHTML = entries.map(([d, amt]) => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);">
+          <span style="font-size:12px;color:var(--text-muted);font-weight:600;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escapeHtml(d)}">${escapeHtml(d)}</span>
+          <span style="font-family:var(--font-display);font-size:13px;font-weight:800;color:var(--accent-2);">₹${amt.toLocaleString('en-IN')}</span>
+        </div>
+      `).join('');
+    }
+  }
+
+  async function renderCustomer3D(){
+    if(!currentCustomerCode) return;
+    const view = $('cust3DView');
+    const raw = localStorage.getItem(threeDKey(currentCustomerCode));
+    if(!raw){ view.textContent = 'No 3D view uploaded yet for this project.'; return; }
+    view.innerHTML = '<div class="note-muted"><i class="fa fa-spinner fa-spin"></i> Loading images…</div>';
+    const data = JSON.parse(raw);
+    // Support both old (imageDataUrl/base64) and new (idbKey) format
+    const rawImages = data.images && data.images.length ? data.images : (data.imageDataUrl ? [data.imageDataUrl] : []);
+    const resolved = await resolveImageSources(rawImages);
+    let html = '';
+    if(resolved.length){
+      html += `<div class="history-img-grid">`;
+      resolved.forEach((item, i) => {
+        html += `<img src="${item.url}" alt="3D view ${i+1}" onclick="openLightbox(this.src)" title="Click to expand">`;
+      });
+      html += `</div>`;
+      html += `<div class="note-muted" style="margin-top:8px;">${resolved.length} image${resolved.length>1?'s':''} · <a href="${resolved[0].url}" target="_blank" style="color:var(--accent);">Open first in new tab</a></div>`;
+    } else {
+      html += `<div class="note-muted">No 3D image yet.</div>`;
+    }
+    if(data.desc) html += `<div style="margin-top:8px;"><strong>Description:</strong> ${escapeHtml(data.desc)}</div>`;
+    html += `<div class="note-muted" style="margin-top:8px;">Updated: ${new Date(data.time).toLocaleString()}</div>`;
+    view.innerHTML = html;
+  }
+
+  // ===== Smart Calendar — Tab Switcher =====
+  let _calActiveTab = 'estimation';
+  function switchCalTab(tab){
+    _calActiveTab = tab;
+    ['estimation','3d','daily'].forEach(t => {
+      const btn = t === 'estimation' ? $('calTabEst') : t === '3d' ? $('calTab3D') : $('calTabDaily');
+      const sec = t === 'estimation' ? $('calSectionEst') : t === '3d' ? $('calSection3D') : $('calSectionDaily');
+      if(btn) btn.classList.toggle('active', t === tab);
+      if(sec) sec.classList.toggle('active', t === tab);
+    });
+    // Re-render for selected date if already chosen
+    const date = $('customerHistoryDate')?.value;
+    if(date && currentCustomerCode) renderCustomerHistoryForTab(date, tab);
+  }
+
+  function renderCustomerHistory(){
+    const date = $('customerHistoryDate').value;
+    if(!date || !currentCustomerCode) return;
+    renderCustomerHistoryForTab(date, _calActiveTab);
+    // Render all tabs in background
+    ['estimation','3d','daily'].forEach(t => renderCustomerHistoryForTab(date, t));
+  }
+
+
+  async function renderCustomerHistoryForTab(date, tab){
+    if(tab === 'estimation'){
+      const view = $('calEstView');
+      try {
+        const raw = localStorage.getItem(estKey(currentCustomerCode));
+        if(!raw){ view.innerHTML = '<span class="note-muted">No estimation entries found for this date.</span>'; return; }
+        const arr = JSON.parse(raw);
+        const estArr = Array.isArray(arr) ? arr : [arr];
+        const filtered = estArr.filter(e => e.date === date);
+        if(!filtered.length){ view.innerHTML = '<span class="note-muted">No estimation entries on ' + date + '.</span>'; return; }
+        let total = filtered.reduce((s,e) => s + (Number(e.amount)||0), 0);
+        view.innerHTML = `
+          <div style="margin-bottom:12px;padding:12px;background:var(--gradient-card);border-radius:var(--radius-md);border:1px solid var(--border);">
+            <div style="font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Total for ${date}</div>
+            <div style="font-family:var(--font-display);font-size:28px;font-weight:800;color:var(--accent);">₹ ${total.toLocaleString('en-IN')}</div>
+          </div>
+        ` + filtered.map(e => `
+          <div class="timeline-item">
+            <div class="update-date"><i class="fa fa-layer-group"></i> ${escapeHtml(e.domain||'General')}</div>
+            <div>Amount: <strong>₹ ${Number(e.amount||0).toLocaleString('en-IN')}</strong></div>
+            ${e.notes ? `<div class="note-muted">${escapeHtml(e.notes)}</div>` : ''}
+            <div class="note-muted">${e.time ? new Date(e.time).toLocaleTimeString() : ''}</div>
+          </div>
+        `).join('');
+      } catch(e){ view.innerHTML='<span class="note-muted">Error loading estimation data.</span>'; }
+
+    } else if(tab === '3d'){
+      const view = $('cal3DView');
+      try {
+        const raw = localStorage.getItem(threeDKey(currentCustomerCode));
+        if(!raw){ view.innerHTML = '<span class="note-muted">No 3D uploads found for this date.</span>'; return; }
+        const data = JSON.parse(raw);
+        const uploadDate = data.date || (data.time ? new Date(data.time).toISOString().split('T')[0] : null);
+        if(uploadDate !== date){ view.innerHTML = '<span class="note-muted">No 3D upload found on ' + date + '.</span>'; return; }
+        view.innerHTML = '<span class="note-muted"><i class="fa fa-spinner fa-spin"></i> Loading images…</span>';
+        const rawImgs = data.images && data.images.length ? data.images : (data.imageDataUrl ? [data.imageDataUrl] : []);
+        const resolved = await resolveImageSources(rawImgs);
+        let html = resolved.length ? `<div class="history-img-grid">${resolved.map((item,i) => `<img src="${item.url}" alt="3D ${i+1}" onclick="openLightbox(this.src)">`).join('')}</div>` : '';
+        if(data.desc) html += `<div style="margin-top:8px;"><strong>Description:</strong> ${escapeHtml(data.desc)}</div>`;
+        html += `<div class="note-muted" style="margin-top:6px;">${resolved.length} image${resolved.length!==1?'s':''} · ${data.time ? new Date(data.time).toLocaleTimeString() : ''}</div>`;
+        view.innerHTML = html || '<span class="note-muted">No images in this 3D upload.</span>';
+      } catch(e){ view.innerHTML='<span class="note-muted">Error loading 3D data.</span>'; }
+
+    } else if(tab === 'daily'){
+      const view = $('calDailyView');
+      try {
+        const logs = JSON.parse(localStorage.getItem(updatesKey(currentCustomerCode)) || '[]');
+        const filtered = logs.filter(l => l.date === date);
+        if(!filtered.length){ view.innerHTML = '<span class="note-muted">No daily updates found on ' + date + '.</span>'; return; }
+        view.innerHTML = '<span class="note-muted"><i class="fa fa-spinner fa-spin"></i> Loading…</span>';
+        let html = '';
+        for(const log of filtered){
+          const rawImgs = (log.images && log.images.length) ? log.images : (log.imageDataUrl ? [log.imageDataUrl] : []);
+          const resolved = await resolveImageSources(rawImgs);
+          html += `
+            <div class="timeline-item">
+              <div class="update-date"><i class="fa fa-layer-group"></i> ${escapeHtml(log.domain||'General')}</div>
+              <div><strong>Workers:</strong> ${escapeHtml(String(log.workers||'0'))}</div>
+              <div style="margin-top:4px;">${escapeHtml(log.text)}</div>
+              ${resolved.length ? `<div class="history-img-grid" style="margin-top:8px;">${resolved.map((item,i)=>`<img src="${item.url}" alt="Photo ${i+1}" onclick="openLightbox(this.src)">`).join('')}</div>` : ''}
+            </div>
+          `;
+        }
+        view.innerHTML = html;
+      } catch(e){ view.innerHTML='<span class="note-muted">Error loading daily updates.</span>'; }
+    }
+  }
+
+  // ===== STEP 17 — PDF =====
+  function downloadPDF(){
+    const element = document.getElementById('customer-dashboard');
+    const options = {
+      margin:0.3, filename:'B2C_Project_Report.pdf',
+      image:{type:'jpeg',quality:1},
+      html2canvas:{scale:3,useCORS:true,logging:false},
+      jsPDF:{unit:'in',format:'a4',orientation:'portrait'}
+    };
+    showNotification('Generating PDF report…');
+    html2pdf().set(options).from(element).save();
+  }
+
+  // ===== BUILDER FLOW =====
+  function openBuilderLogin(){
+    $('builder-portal').style.display = 'block';
+    $('customer-portal').style.display = 'none';
+    $('builderName').value = '';
+    $('builderLoginMsg').textContent = '';
+    $('builderDashboard').style.display = 'none';
+  }
+
+  function loginBuilder(){
+    const name = $('builderName').value.trim();
+    const msg = $('builderLoginMsg');
+    const danger = getComputedStyle(document.documentElement).getPropertyValue('--danger');
+    if(!name){ msg.style.color=danger; msg.textContent='Please enter your name or firm name.'; return; }
+    builderLoggedIn = true;
+    msg.style.color = 'var(--success)';
+    msg.textContent = 'Logged in as builder.';
+    $('builderDashboard').style.display = 'block';
+    $('builderNameDisplay').textContent = name;
+    $('builderProjectCode').value = '';
+    $('builderProjectMsg').textContent = '';
+    $('builderProjectArea').style.display = 'none';
+    currentBuilderProject = null;
+    renderBuilderProjectsList();
+    scrollToEl($('builderDashboard'));
+    showNotification('Logged in as builder.');
+  }
+
+  function openBuilderProject(){
+    const danger = getComputedStyle(document.documentElement).getPropertyValue('--danger');
+    if(!builderLoggedIn){ $('builderProjectMsg').style.color=danger; $('builderProjectMsg').textContent='Login as builder first.'; return; }
+    const code = $('builderProjectCode').value.trim();
+    const msg = $('builderProjectMsg');
+    if(code.length !== 10 || !/^\d+$/.test(code)){
+      msg.style.color=danger; msg.textContent='Enter a valid 10‑digit project code.'; return;
+    }
+    currentBuilderProject = code;
+    $('builderProjectArea').style.display = 'block';
+    $('builderProjectCodeDisplay').textContent = code;
+    msg.style.color = 'var(--success)';
+    msg.textContent = 'Project opened successfully.';
+    renderBuilderSuggestions();
+    showNotification('Builder opened project ' + code);
+    scrollToEl($('builderProjectArea'));
+  }
+
+  function renderBuilderProjectsList(){
+    const list = $('builderProjectsList');
+    if(!list) return;
+    const codes = [];
+    for(const k in localStorage){
+      if(k && k.startsWith("b2c_updates_")) codes.push(k.substring("b2c_updates_".length));
+    }
+    list.innerHTML = '';
+    if(!codes.length){ list.innerHTML = '<div class="stat-card"><div class="stat-icon"><i class="fa fa-folder-open"></i></div><span class="stat-value" style="font-size:14px;">No projects yet</span></div>'; return; }
+    codes.slice(-5).forEach(code => {
+      const card = document.createElement('div');
+      card.className = 'stat-card';
+      card.innerHTML = `
+        <div class="stat-icon"><i class="fa fa-folder"></i></div>
+        <span class="stat-value" style="font-size:16px;">${escapeHtml(code)}</span>
+        <span class="stat-label">Project Code</span>
+        <button class="btn btn-primary btn-sm" onclick="builderQuickOpen('${code}')" style="margin-top:8px;">Open</button>
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  function builderQuickOpen(code){ $('builderProjectCode').value = code; openBuilderProject(); }
+
+  // ===== STEP 3 — saveEstimation with ARRAY storage =====
+  function saveEstimation(){
+    const danger = getComputedStyle(document.documentElement).getPropertyValue('--danger');
+    if(!currentBuilderProject){ $('estStatus').style.color=danger; $('estStatus').textContent='Open a project code first.'; return; }
+    const domain = $('estDomain').value;
+    const amount = $('estAmount').value.trim();
+    const notes  = $('estNotes').value.trim();
+    if(!domain || !amount){ $('estStatus').style.color=danger; $('estStatus').textContent='Select a domain and enter an estimated amount.'; return; }
+
+    // Load existing array (migrate from old single-object format)
+    let history = [];
+    try {
+      const raw = localStorage.getItem(estKey(currentBuilderProject));
+      if(raw) {
+        const parsed = JSON.parse(raw);
+        if(Array.isArray(parsed)) history = parsed;
+        else if(parsed && typeof parsed === 'object') history = [parsed]; // migrate old format
+      }
+    } catch(e) { history = []; }
+
+    const now = new Date();
+    const localDate = now.getFullYear() + "-" + String(now.getMonth()+1).padStart(2,'0') + "-" + String(now.getDate()).padStart(2,'0');
+    const entry = { domain, amount:escapeHtml(amount), notes:escapeHtml(notes), date:localDate, time:now.toISOString() };
+    history.push(entry);
+    localStorage.setItem(estKey(currentBuilderProject), JSON.stringify(history));
+
+    saveHistory(currentBuilderProject, 'Estimation', 'Estimation updated for domain: ' + domain);
+    $('estStatus').style.color = 'var(--success)';
+    $('estStatus').textContent = 'Estimation saved for code ' + currentBuilderProject + '.';
+    $('estAmount').value = '';
+    $('estNotes').value = '';
+    showNotification("Estimation saved!");
+  }
+
+  // ===== IndexedDB Storage Engine (replaces localStorage for binary data) =====
+  const IDB_NAME = 'b2c_filestore';
+  const IDB_STORE = 'blobs';
+  let _idb = null;
+
+  function openIDB(){
+    if(_idb) return Promise.resolve(_idb);
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(IDB_NAME, 1);
+      req.onupgradeneeded = e => {
+        const db = e.target.result;
+        if(!db.objectStoreNames.contains(IDB_STORE)) db.createObjectStore(IDB_STORE);
+      };
+      req.onsuccess = e => { _idb = e.target.result; resolve(_idb); };
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function idbSet(key, value){
+    const db = await openIDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(IDB_STORE, 'readwrite');
+      tx.objectStore(IDB_STORE).put(value, key);
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+
+  async function idbGet(key){
+    const db = await openIDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(IDB_STORE, 'readonly');
+      const req = tx.objectStore(IDB_STORE).get(key);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function idbDelete(key){
+    const db = await openIDB();
+    return new Promise((resolve) => {
+      const tx = db.transaction(IDB_STORE, 'readwrite');
+      tx.objectStore(IDB_STORE).delete(key);
+      tx.oncomplete = resolve;
+    });
+  }
+
+  // Generate a unique storage key for a file
+  function makeFileKey(context, index){ return `b2c_img_${context}_${Date.now()}_${index}`; }
+
+  // ===== File Reader Helper =====
+  function readFileAsDataURL(file){
+    return new Promise((resolve, reject) => {
+      if(!file) return resolve('');
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ''));
+      reader.onerror = () => reject(new Error('File read failed'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Compress image using canvas — higher resolution, still compress for quality
+  function compressImage(file, maxW=1920, quality=0.82){
+    return new Promise((resolve) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        const scale = Math.min(1, maxW / Math.max(img.width, img.height));
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(url);
+        canvas.toBlob(blob => {
+          resolve(blob || new Blob([]));
+        }, 'image/jpeg', quality);
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        resolve(new Blob([]));
+      };
+      img.src = url;
+    });
+  }
+
+  // Store files in IndexedDB, return array of idb keys + object URLs for display
+  async function storeFilesInIDB(files, contextKey){
+    const results = [];
+    for(let i = 0; i < files.length; i++){
+      const f = files[i];
+      try {
+        let blob;
+        if(f.type.startsWith('image/')){
+          blob = await compressImage(f);
+        } else {
+          blob = f;
+        }
+        const key = makeFileKey(contextKey, i);
+        await idbSet(key, blob);
+        const objectUrl = URL.createObjectURL(blob);
+        results.push({ idbKey: key, url: objectUrl, name: f.name, type: f.type, size: blob.size });
+      } catch(e){
+        console.warn('Failed to store file', f.name, e);
+      }
+    }
+    return results;
+  }
+
+  // Retrieve a blob from IDB and return an Object URL
+  async function getIDBUrl(key){
+    try {
+      const blob = await idbGet(key);
+      if(!blob) return null;
+      return URL.createObjectURL(blob);
+    } catch(e){ return null; }
+  }
+
+  // Read multiple files with compression (legacy: returns data URLs for compat)
+  // Now stores in IDB, returns metadata objects {idbKey, url, name, type}
+  async function readMultipleFiles(files, contextKey){
+    return storeFilesInIDB(files, contextKey || 'upload_' + Date.now());
+  }
+
+  // Render images from stored log - handles both old base64 and new idbKey format
+  async function resolveImageSources(imgArr){
+    if(!imgArr || !imgArr.length) return [];
+    const urls = [];
+    for(const item of imgArr){
+      if(typeof item === 'string'){
+        // Legacy base64
+        urls.push({ url: item, isLegacy: true });
+      } else if(item && item.idbKey){
+        const url = await getIDBUrl(item.idbKey);
+        urls.push({ url: url || '', name: item.name, idbKey: item.idbKey });
+      } else if(item && item.url){
+        urls.push({ url: item.url, name: item.name });
+      }
+    }
+    return urls.filter(x => x.url);
+  }
+
+  // ===== Upload UX — File select handler =====
+  const _uploadFiles = { threed: [], daily: [] };
+  function handleFileSelect(input, type){
+    const files = Array.from(input.files);
+    _uploadFiles[type] = files;
+    renderFilePreviews(type, files);
+  }
+  function handleDragOver(e, zoneId){ e.preventDefault(); $(zoneId)?.classList.add('drag-over'); }
+  function handleDragLeave(e, zoneId){ $(zoneId)?.classList.remove('drag-over'); }
+  function handleDrop(e, inputId, type){
+    e.preventDefault();
+    const zone = type === 'threed' ? 'threeDUploadZone' : 'dailyUploadZone';
+    $(zone)?.classList.remove('drag-over');
+    const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+    if(!files.length) return;
+    _uploadFiles[type] = files;
+    renderFilePreviews(type, files);
+  }
+  function renderFilePreviews(type, files){
+    const grid = $(type + '-preview-grid');
+    const tags = $(type + '-file-tags');
+    if(!grid || !tags) return;
+    grid.innerHTML = '';
+    tags.innerHTML = '';
+    if(!files.length) return;
+
+    // Count badge
+    tags.innerHTML = `<div class="upload-count-badge"><i class="fa fa-check"></i> ${files.length} file${files.length > 1 ? 's' : ''} selected</div>`;
+
+    // Tags list
+    const tagRow = document.createElement('div');
+    tagRow.style.marginTop = '8px';
+    files.forEach((f, i) => {
+      const tag = document.createElement('span');
+      tag.className = 'selected-file-tag';
+      tag.innerHTML = `<i class="fa fa-check-circle"></i> ${escapeHtml(f.name)}`;
+      tagRow.appendChild(tag);
+    });
+    tags.appendChild(tagRow);
+
+    // Image previews (rendered lazily via createObjectURL - no lag)
+    files.forEach((f, i) => {
+      const item = document.createElement('div');
+      item.className = 'file-preview-item';
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(f);
+      img.alt = f.name;
+      img.onclick = () => openLightbox(img.src);
+      const rm = document.createElement('button');
+      rm.className = 'remove-file';
+      rm.innerHTML = '<i class="fa fa-times"></i>';
+      rm.onclick = (e) => { e.stopPropagation(); _uploadFiles[type].splice(i,1); renderFilePreviews(type, _uploadFiles[type]); };
+      item.appendChild(img);
+      item.appendChild(rm);
+      grid.appendChild(item);
+    });
+  }
+  function openLightbox(src){ const lb = $('imgLightbox'); $('lightboxImg').src = src; lb.classList.add('open'); }
+  function closeLightbox(){ $('imgLightbox').classList.remove('open'); $('lightboxImg').src = ''; }
+
+  // ===== 3D Upload — Multi-image =====
+  async function save3DView(){
+    const danger = getComputedStyle(document.documentElement).getPropertyValue('--danger');
+    if(!currentBuilderProject){ $('threeDStatus').style.color=danger; $('threeDStatus').textContent='Open a project code first.'; return; }
+    const files = _uploadFiles['threed'];
+    const desc = $('threeDDesc').value.trim();
+    if(!files.length){ $('threeDStatus').style.color=danger; $('threeDStatus').textContent='Please choose at least one 3D view image.'; return; }
+    $('threeDStatus').style.color='var(--accent-soft)'; $('threeDStatus').textContent='Processing & uploading…';
+    try{
+      const ctxKey = '3d_' + currentBuilderProject + '_' + Date.now();
+      const stored = await storeFilesInIDB(files, ctxKey);
+      const now = new Date();
+      const localDate = now.getFullYear() + "-" + String(now.getMonth()+1).padStart(2,'0') + "-" + String(now.getDate()).padStart(2,'0');
+      // Save only metadata (idbKeys) in localStorage — no binary data
+      const data = { images: stored.map(s => ({ idbKey: s.idbKey, name: s.name, type: s.type })), desc:escapeHtml(desc), time:now.toISOString(), date:localDate };
+      localStorage.setItem(threeDKey(currentBuilderProject), JSON.stringify(data));
+      saveHistory(currentBuilderProject, '3D Upload', '3D design uploaded (' + stored.length + ' image' + (stored.length>1?'s':'') + ')');
+      $('threeDStatus').style.color = 'var(--success)';
+      $('threeDStatus').textContent = stored.length + ' 3D image' + (stored.length>1?'s':'') + ' saved for code ' + currentBuilderProject + '.';
+      _uploadFiles['threed'] = [];
+      $('threeDFile').value = '';
+      $('threed-preview-grid').innerHTML = '';
+      $('threed-file-tags').innerHTML = '';
+      $('threeDDesc').value = '';
+      showNotification('3D view uploaded!');
+    }catch(e){
+      $('threeDStatus').style.color=danger;
+      $('threeDStatus').textContent='Could not store the file. Please try again.';
+    }
+  }
+
+  async function saveDailyUpdate(){
+    const danger = getComputedStyle(document.documentElement).getPropertyValue('--danger');
+    if(!currentBuilderProject){ $('updStatus').style.color=danger; $('updStatus').textContent='Open a project code first.'; return; }
+    const domain = $('dailyDomain').value;
+    const date = $('updDate').value;
+    const text = $('updText').value.trim();
+    const workers = $('dailyWorkers').value;
+    const dprStatus = $('dailyStatus') ? $('dailyStatus').value : 'Doing';
+    if(!domain || !date || !text){ $('updStatus').style.color=danger; $('updStatus').textContent='Select domain, enter date and description.'; return; }
+    if(text.length > 500){ $('updStatus').style.color=danger; $('updStatus').textContent='Description too long.'; return; }
+    const files = _uploadFiles['daily'];
+    const key = updatesKey(currentBuilderProject);
+    let list = JSON.parse(localStorage.getItem(key) || "[]");
+    $('updStatus').style.color='var(--accent-soft)'; $('updStatus').textContent='Processing images…';
+    try{
+      let imagesMeta = [];
+      if(files.length){
+        const ctxKey = 'daily_' + currentBuilderProject + '_' + Date.now();
+        const stored = await storeFilesInIDB(files, ctxKey);
+        imagesMeta = stored.map(s => ({ idbKey: s.idbKey, name: s.name, type: s.type }));
+      }
+      // Save only metadata in localStorage — no binary blobs
+      list.push({ domain, workers, date, text:escapeHtml(text), imageDataUrl: '', images: imagesMeta, dprStatus, uploadedBy: currentBuilderProject });
+      localStorage.setItem(key, JSON.stringify(list));
+      saveHistory(currentBuilderProject, 'Daily Update', '[' + domain + '] ' + text);
+      $('updStatus').style.color = 'var(--success)';
+      $('updStatus').textContent = "Daily work uploaded" + (imagesMeta.length ? " with " + imagesMeta.length + " photo" + (imagesMeta.length>1?'s':'') : '') + ".";
+      $('updText').value = '';
+      $('dailyWorkers').value = '';
+      if($('dailyStatus')) $('dailyStatus').value = 'Doing';
+      _uploadFiles['daily'] = [];
+      $('updImageFile').value = '';
+      $('daily-preview-grid').innerHTML = '';
+      $('daily-file-tags').innerHTML = '';
+      showNotification('Work update uploaded!');
+      renderStatsDashboard();
+    }catch(e){
+      $('updStatus').style.color=danger;
+      $('updStatus').textContent='Could not store the file. Please try again.';
+    }
+  }
+
+  // ===== Builder Suggestions =====
+  function renderBuilderSuggestions(){
+    const view = $('builderSuggestionsView');
+    if(!currentBuilderProject){ view.textContent='No project open.'; return; }
+    const raw = localStorage.getItem(suggKey(currentBuilderProject));
+    const list = raw ? JSON.parse(raw) : [];
+    if(!list.length){ view.textContent='No suggestions received yet from customer.'; return; }
+    const byDate = {};
+    list.forEach(s => {
+      if(!byDate[s.date]) byDate[s.date] = [];
+      byDate[s.date].push(s);
+    });
+    let html = '';
+    Object.keys(byDate).sort().reverse().forEach(d => {
+      html += `<div class="timeline-item"><div class="update-date"><i class="fa fa-calendar"></i> ${escapeHtml(d)}</div>`;
+      byDate[d].forEach(s => {
+        html += `<div>${escapeHtml(s.message)}<span class="note-muted" style="margin-left:8px;">${s.time ? new Date(s.time).toLocaleString() : ''}</span></div>`;
+      });
+      html += `</div>`;
+    });
+    view.innerHTML = html;
+  }
+
+  // ===== BUILDER HISTORY CALENDAR =====
+  function renderBuilderHistory(){
+    const date = $('builderHistoryDate').value;
+    const view = $('builderHistoryView');
+    if(!date || !currentBuilderProject){ view.innerHTML='Select a valid date.'; return; }
+    const history = JSON.parse(localStorage.getItem(historyKey(currentBuilderProject)) || '[]');
+    const filtered = history.filter(h => h.date === date);
+    if(!filtered.length){ view.innerHTML='No history found for this date.'; return; }
+    view.innerHTML = filtered.map(item => `
+      <div class="timeline-item">
+        <div class="update-date">${escapeHtml(item.type)}</div>
+        <div>${escapeHtml(item.message)}</div>
+        <div class="note-muted">${item.timestamp}</div>
+      </div>
+    `).join('');
+  }
+
+  // ===== MILESTONE TIMELINE =====
+  function renderMilestoneTimeline(){
+    if(!currentCustomerCode) return;
+    const track = $('milestoneTrack');
+    if(!track) return;
+    const logs = JSON.parse(localStorage.getItem(updatesKey(currentCustomerCode)) || '[]');
+    const activeDomains = new Set(logs.map(l => l.domain));
+    // Find the last active domain index
+    let lastActiveIdx = -1;
+    DOMAINS.forEach((d, i) => { if(activeDomains.has(d)) lastActiveIdx = i; });
+    let html = '';
+    DOMAINS.forEach((domain, i) => {
+      const isDone = activeDomains.has(domain);
+      const isActive = !isDone && i === lastActiveIdx + 1;
+      const cls = isDone ? 'ms-done' : isActive ? 'ms-active' : '';
+      const icon = isDone ? '<i class="fa fa-check"></i>' : isActive ? '<i class="fa fa-circle-dot"></i>' : '<i class="fa fa-circle"></i>';
+      // Short label
+      const short = domain.length > 14 ? domain.substring(0,13)+'…' : domain;
+      html += `<div class="milestone-step ${cls}"><div class="ms-dot">${icon}</div><div class="ms-label">${short}</div></div>`;
+    });
+    track.innerHTML = html;
+  }
+
+
+  // ===== BILLS UPLOAD (Builder) =====
+  // Legacy helper: restore Blob URL from old base64-stored PDFs (backward compatibility)
+  function _base64ToArrayBuffer(base64){
+    const binary = atob(base64);
+    const bytes  = new Uint8Array(binary.length);
+    for(let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return bytes.buffer;
+  }
+
+  function restorePDFBlobUrl(fileObj){
+    if(!fileObj || !fileObj.data) return null;
+    try {
+      const b64 = fileObj.data.includes(',') ? fileObj.data.split(',')[1] : fileObj.data;
+      const blob = new Blob([_base64ToArrayBuffer(b64)], { type: fileObj.type || 'application/pdf' });
+      return URL.createObjectURL(blob);
+    } catch(e){ return null; }
+  }
+
+  async function saveBillUpload(){
+    if(!currentBuilderProject){ showNotification("Open a project first"); return; }
+    const domain = $('billDomain').value.trim();
+    const date = $('billDate').value;
+    const desc = $('billDesc').value.trim();
+    const files = $('billFile').files;
+    if(!domain || !date || !desc || files.length === 0){
+      $('billStatus').textContent = "Please fill all fields and upload bill files."; return;
+    }
+    $('billStatus').textContent = "Uploading files…";
+    try {
+      const ctxKey = 'bill_' + currentBuilderProject + '_' + Date.now();
+      const fileDataArr = [];
+      for(let i = 0; i < files.length; i++){
+        const f = files[i];
+        let blob;
+        if(f.type.startsWith('image/')){
+          blob = await compressImage(f, 1920, 0.82);
+        } else {
+          blob = f; // PDF stored as-is
+        }
+        const idbKey = makeFileKey(ctxKey, i);
+        await idbSet(idbKey, blob);
+        fileDataArr.push({ idbKey, name: f.name, type: f.type, size: blob.size });
+      }
+      let bills = JSON.parse(localStorage.getItem(billsKey(currentBuilderProject)) || "[]");
+      bills.push({ domain, date, desc, files: fileDataArr, uploadedAt: new Date().toLocaleString() });
+      bills.sort((a,b) => new Date(b.date) - new Date(a.date));
+      localStorage.setItem(billsKey(currentBuilderProject), JSON.stringify(bills));
+      saveHistory(currentBuilderProject, 'bill', 'Bill uploaded for ' + domain);
+      $('billStatus').textContent = "Bills uploaded successfully (" + fileDataArr.length + " file" + (fileDataArr.length>1?'s':'') + ").";
+      $('billDesc').value = '';
+      $('billFile').value = '';
+      showNotification("Bills uploaded");
+    } catch(err){
+      $('billStatus').textContent = "Upload failed: " + (err.message || err);
+    }
+  }
+
+  // ===== BILLS RENDER (Customer) =====
+  async function renderBillsForCustomer(){
+    const wrap = $('customerBillsView');
+    if(!wrap) return;
+    const bills = JSON.parse(localStorage.getItem(billsKey(currentCustomerCode)) || "[]");
+    if(bills.length === 0){
+      wrap.innerHTML = '<div class="note-muted">No bills uploaded yet.</div>'; return;
+    }
+    wrap.innerHTML = '<div class="note-muted"><i class="fa fa-spinner fa-spin"></i> Loading files…</div>';
+    let html = '';
+    for(const bill of bills){
+      let filesHTML = '';
+      for(const file of bill.files){
+        const isImage = file.type && file.type.startsWith('image/');
+        const isPDF   = file.type === 'application/pdf' || file.isPDF;
+        if(file.idbKey){
+          // New IDB-based file
+          const blobUrl = await getIDBUrl(file.idbKey);
+          if(!blobUrl){ filesHTML += `<span class="note-muted" style="margin:5px;">File unavailable (${escapeHtml(file.name)})</span>`; continue; }
+          if(isImage){
+            filesHTML += `<a href="${blobUrl}" target="_blank"><img src="${blobUrl}" style="width:100px;height:80px;object-fit:cover;border-radius:10px;margin:5px;border:1px solid var(--border);"></a>`;
+          } else {
+            filesHTML += `
+              <span style="display:inline-flex;gap:6px;align-items:center;margin:5px;">
+                <a href="${blobUrl}" target="_blank" class="btn btn-sm btn-primary" style="text-decoration:none;">
+                  <i class="fa fa-eye"></i> View ${escapeHtml(file.name)}
+                </a>
+                <a href="${blobUrl}" download="${escapeHtml(file.name)}" class="btn btn-sm" style="background:var(--bg-soft);color:var(--text-main);border:1.5px solid var(--border);padding:8px 14px;border-radius:var(--radius-md);font-weight:700;font-size:13px;font-family:var(--font-body);text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                  <i class="fa fa-download"></i> Save
+                </a>
+              </span>`;
+          }
+        } else if(isImage && file.data){
+          // Legacy base64 image
+          filesHTML += `<a href="${file.data}" target="_blank"><img src="${file.data}" style="width:100px;height:80px;object-fit:cover;border-radius:10px;margin:5px;border:1px solid var(--border);"></a>`;
+        } else if(isPDF && file.data){
+          // Legacy base64 PDF
+          const blobUrl = restorePDFBlobUrl(file);
+          const href = blobUrl || file.data || '#';
+          filesHTML += `
+            <span style="display:inline-flex;gap:6px;align-items:center;margin:5px;">
+              <a href="${href}" target="_blank" class="btn btn-sm btn-primary" style="text-decoration:none;">
+                <i class="fa fa-eye"></i> View ${escapeHtml(file.name)}
+              </a>
+              <a href="${file.data}" download="${escapeHtml(file.name)}" class="btn btn-sm" style="background:var(--bg-soft);color:var(--text-main);border:1.5px solid var(--border);padding:8px 14px;border-radius:var(--radius-md);font-weight:700;font-size:13px;font-family:var(--font-body);text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                <i class="fa fa-download"></i> Save
+              </a>
+            </span>`;
+        } else {
+          filesHTML += `<span class="note-muted" style="margin:5px;">${escapeHtml(file.name||'File')}</span>`;
+        }
+      }
+      html += `
+        <div class="timeline-item">
+          <div class="update-date"><i class="fa fa-calendar"></i> ${escapeHtml(bill.date)}</div>
+          <div style="font-weight:700;color:var(--accent);margin-bottom:5px;">${escapeHtml(bill.domain)}</div>
+          <div style="margin-bottom:10px;">${escapeHtml(bill.desc)}</div>
+          <div style="display:flex;flex-wrap:wrap;">${filesHTML}</div>
+        </div>`;
+    }
+    wrap.innerHTML = html;
+  }
+
+
+  // ===== DOMAIN STATUS GRID =====
+  function renderDomainStatusGrid(){
+    if(!currentCustomerCode) return;
+    const wrap = $('domainStatusGrid');
+    if(!wrap) return;
+    const logs = JSON.parse(localStorage.getItem(updatesKey(currentCustomerCode)) || '[]');
+    const delays = JSON.parse(localStorage.getItem(delaysKey(currentCustomerCode)) || '[]');
+    wrap.innerHTML = DOMAINS.map((domain) => {
+      const domainLogs = logs.filter(l => l.domain === domain);
+      const domainDelays = delays.filter(d => d.domain === domain);
+      const hasDelay = domainDelays.length > 0;
+      const updateCount = domainLogs.length;
+      let status = 'Planned', statusCls = 'ds-planned', statusIcon = 'fa-clock', pct = 0;
+      if(hasDelay){ status='Delayed'; statusCls='ds-delayed'; statusIcon='fa-triangle-exclamation'; pct=40; }
+      else if(updateCount > 0){
+        const lastDpr = domainLogs[domainLogs.length-1].dprStatus || 'Doing';
+        if(lastDpr === 'Completed'){ status='Completed'; statusCls='ds-completed'; statusIcon='fa-check-circle'; pct=100; }
+        else { status='In Progress'; statusCls='ds-doing'; statusIcon='fa-hammer'; pct=Math.min(90, 20 + updateCount*15); }
+      }
+      const dates = domainLogs.map(l=>l.date).filter(Boolean).sort();
+      const startDate = dates[0] || '';
+      const lastDate = dates[dates.length-1] || '';
+      const datesStr = startDate ? (startDate === lastDate ? startDate : startDate + ' → ' + lastDate) : 'Not started';
+      const badgeCls = status==='Completed'?'badge-completed':status==='In Progress'?'badge-doing':status==='Delayed'?'badge-delayed':'badge-planned';
+      return `
+        <div class="domain-status-card ${statusCls}">
+          <div class="ds-name"><i class="fa ${statusIcon}" style="color:inherit;margin-right:5px;"></i>${escapeHtml(domain)}</div>
+          <div class="ds-bar-wrap"><div class="ds-bar-fill" style="width:${pct}%;"></div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+            <span class="status-badge ${badgeCls}" style="font-size:10px;">${status}</span>
+            <span class="ds-meta">${updateCount} update${updateCount!==1?'s':''}</span>
+          </div>
+          <div class="ds-dates"><i class="fa fa-calendar" style="color:var(--accent-2);"></i> ${escapeHtml(datesStr)}</div>
+          ${hasDelay ? `<div style="font-size:11px;color:var(--danger);margin-top:4px;font-weight:600;"><i class="fa fa-triangle-exclamation"></i> ${escapeHtml((domainDelays[domainDelays.length-1].reason||'').substring(0,60))}</div>` : ''}
+        </div>`;
+    }).join('');
+  }
+
+  // ===== COST SUMMARY DASHBOARD =====
+  function renderCostSummary(){
+    if(!currentCustomerCode) return;
+    let estArr = [];
+    try {
+      const raw = localStorage.getItem(estKey(currentCustomerCode));
+      if(raw){ const p = JSON.parse(raw); estArr = Array.isArray(p) ? p : [p]; }
+    } catch(e){ estArr = []; }
+    const logs = JSON.parse(localStorage.getItem(updatesKey(currentCustomerCode)) || '[]');
+    const totalEst = estArr.reduce((s,e)=>s+(Number(e.amount)||0),0);
+    const domainMap = {};
+    estArr.forEach(e => { if(!domainMap[e.domain]) domainMap[e.domain]=0; domainMap[e.domain]+=Number(e.amount)||0; });
+    const totalDomains = Object.keys(domainMap).length;
+    const cards = $('costSummaryCards');
+    const tbody = $('costTableBody');
+    if(!cards) return;
+    cards.innerHTML = `
+      <div class="cost-summary-card">
+        <div class="cost-summary-label"><i class="fa fa-rupee-sign"></i> Total Estimated</div>
+        <div class="cost-summary-value" style="color:var(--accent);">₹${totalEst.toLocaleString('en-IN')}</div>
+        <div class="cost-summary-sub">${estArr.length} entries</div>
+      </div>
+      <div class="cost-summary-card">
+        <div class="cost-summary-label"><i class="fa fa-layer-group"></i> Domains Costed</div>
+        <div class="cost-summary-value">${totalDomains}</div>
+        <div class="cost-summary-sub">of ${DOMAINS.length} total</div>
+      </div>
+      <div class="cost-summary-card">
+        <div class="cost-summary-label"><i class="fa fa-camera"></i> Total Updates</div>
+        <div class="cost-summary-value">${logs.length}</div>
+        <div class="cost-summary-sub">All time</div>
+      </div>`;
+    if(tbody){
+      if(!totalDomains){ tbody.innerHTML='<tr><td colspan="3" style="color:var(--text-muted);text-align:center;padding:16px;">No estimations yet.</td></tr>'; return; }
+      tbody.innerHTML = DOMAINS.map(domain => {
+        const amt = domainMap[domain] || 0;
+        const updCount = logs.filter(l=>l.domain===domain).length;
+        if(!amt && !updCount) return '';
+        return `<tr><td>${escapeHtml(domain)}</td><td class="cost-amt">₹${amt.toLocaleString('en-IN')}</td><td>${updCount}</td></tr>`;
+      }).filter(Boolean).join('') +
+      `<tr style="background:var(--gradient-card);"><td><strong>Total</strong></td><td class="cost-amt"><strong>₹${totalEst.toLocaleString('en-IN')}</strong></td><td><strong>${logs.length}</strong></td></tr>`;
+    }
+  }
+
+  // ===== APPROVAL SYSTEM (Builder) =====
+  let _aprType = 'Design';
+  function setAprType(type){
+    _aprType = type;
+    ['Design','Quotation','Drawing','Material'].forEach(t => {
+      const btn = $('aprType'+t);
+      if(btn) btn.classList.toggle('active', t===type);
+    });
+    if($('aprTypeValue')) $('aprTypeValue').value = type;
+  }
+
+  function saveApprovalRequest(){
+    if(!currentBuilderProject){ showNotification("Open a project first"); return; }
+    const title = $('aprTitle').value.trim();
+    const domain = $('aprDomain').value;
+    const desc = $('aprDesc').value.trim();
+    const type = $('aprTypeValue') ? $('aprTypeValue').value : 'Design';
+    const files = $('aprFile').files;
+    const status = $('aprStatus');
+    if(!title || !desc){ status.textContent='Please fill title and description.'; return; }
+    status.textContent = 'Uploading…';
+    const processFiles = async () => {
+      const fileData = files.length > 0
+        ? await Promise.all(Array.from(files).map(f => readFileForStorage(f)))
+        : [];
+      const approvals = JSON.parse(localStorage.getItem(approvalsKey(currentBuilderProject)) || '[]');
+      const now = new Date();
+      const localDate = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+      approvals.push({ title, domain, desc, type, files:fileData, status:'Pending', date:localDate, uploadedAt:now.toLocaleString(), comment:'' });
+      localStorage.setItem(approvalsKey(currentBuilderProject), JSON.stringify(approvals));
+      saveHistory(currentBuilderProject, 'Approval', 'Approval request: '+title);
+      status.textContent='Approval request sent!';
+      $('aprTitle').value=''; $('aprDesc').value=''; $('aprFile').value='';
+      showNotification('Approval request sent!');
+    };
+    processFiles().catch(() => { status.textContent='Upload failed. File may be too large.'; });
+  }
+
+  function renderCustomerApprovals(){
+    if(!currentCustomerCode) return;
+    const wrap = $('customerApprovalsView');
+    if(!wrap) return;
+    const approvals = JSON.parse(localStorage.getItem(approvalsKey(currentCustomerCode)) || '[]');
+    if(!approvals.length){ wrap.innerHTML='<div class="note-muted">No approval requests yet.</div>'; return; }
+    wrap.innerHTML = [...approvals].reverse().map((item, ri) => {
+      const idx = approvals.length - 1 - ri;
+      const thumbs = (item.files||[]).filter(f=>f.type&&f.type.startsWith('image/')).slice(0,4)
+        .map(f=>`<img src="${f.data}" class="approval-thumb" onclick="openLightbox(this.src)">`).join('');
+      const pdfs = (item.files||[]).filter(f=> f.type==='application/pdf' || f.isPDF).map(f => {
+        const blobUrl = restorePDFBlobUrl(f);
+        const href = blobUrl || f.data || '#';
+        return `<span style="display:inline-flex;gap:6px;align-items:center;margin-bottom:6px;">
+          <a href="${href}" target="_blank" class="btn-doc"><i class="fa fa-eye"></i> View ${escapeHtml(f.name)}</a>
+          <a href="${f.data}" download="${escapeHtml(f.name)}" class="btn-doc" style="background:var(--bg-soft);"><i class="fa fa-download"></i> Save</a>
+        </span>`;
+      }).join('');
+      const stCls = item.status==='Approved'?'ast-approved':item.status==='Changes Requested'?'ast-changes':'ast-pending';
+      return `
+        <div class="approval-item apr-${item.status==='Approved'?'approved':item.status==='Changes Requested'?'changes':'pending'}">
+          <div class="approval-header">
+            <div class="approval-title"><i class="fa fa-tag"></i> ${escapeHtml(item.title)}</div>
+            <span class="approval-status-tag ${stCls}">${escapeHtml(item.status)}</span>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">
+            <span><i class="fa fa-layer-group"></i> ${escapeHtml(item.domain||'—')}</span> &nbsp;·&nbsp;
+            <span><i class="fa fa-tag"></i> ${escapeHtml(item.type)}</span> &nbsp;·&nbsp;
+            <span><i class="fa fa-calendar"></i> ${escapeHtml(item.date||'')}</span>
+          </div>
+          <div class="approval-desc">${escapeHtml(item.desc)}</div>
+          ${thumbs ? `<div class="approval-thumbs">${thumbs}</div>` : ''}
+          ${pdfs ? `<div style="margin-bottom:10px;">${pdfs}</div>` : ''}
+          ${item.comment ? `<div style="background:var(--bg-soft);border-radius:var(--radius-sm);padding:8px 12px;font-size:13px;margin-bottom:8px;"><i class="fa fa-comment"></i> <strong>Your note:</strong> ${escapeHtml(item.comment)}</div>` : ''}
+          ${item.status==='Pending' ? `
+            <textarea class="approval-comment-box" id="aprComment_${idx}" placeholder="Optional: Add a note or reason…"></textarea>
+            <div class="approval-actions" style="margin-top:8px;">
+              <button class="btn-approve" onclick="submitApproval(${idx},'Approved')"><i class="fa fa-check"></i> Approve</button>
+              <button class="btn-reject" onclick="submitApproval(${idx},'Changes Requested')"><i class="fa fa-times"></i> Request Changes</button>
+            </div>` : ''}
+        </div>`;
+    }).join('');
+  }
+
+  function submitApproval(idx, decision){
+    const approvals = JSON.parse(localStorage.getItem(approvalsKey(currentCustomerCode)) || '[]');
+    if(!approvals[idx]) return;
+    const comment = $('aprComment_'+idx) ? $('aprComment_'+idx).value.trim() : '';
+    approvals[idx].status = decision;
+    approvals[idx].comment = comment;
+    approvals[idx].decidedAt = new Date().toLocaleString();
+    localStorage.setItem(approvalsKey(currentCustomerCode), JSON.stringify(approvals));
+    saveHistory(currentCustomerCode, 'Approval', decision+': '+approvals[idx].title);
+    showNotification(decision==='Approved' ? '✅ Approved!' : '🔄 Changes requested');
+    renderCustomerApprovals();
+  }
+
+  // ===== SMART UNIFIED TIMELINE =====
+  function renderSmartUnifiedTimeline(){
+    if(!currentCustomerCode) return;
+    const wrap = $('smartTimelineView');
+    if(!wrap) return;
+    const events = [];
+    const logs = JSON.parse(localStorage.getItem(updatesKey(currentCustomerCode)) || '[]');
+    logs.forEach(l => events.push({ date:l.date||'', type:'daily', title:`[${l.domain||'General'}] Daily Update`, desc:l.text||'', extras:{ workers:l.workers, dpr:l.dprStatus, imgCount:(l.images&&l.images.length)||0 } }));
+    const bills = JSON.parse(localStorage.getItem(billsKey(currentCustomerCode)) || '[]');
+    bills.forEach(b => events.push({ date:b.date||'', type:'bill', title:`Bill: ${b.domain}`, desc:b.desc||'', extras:{ fileCount:b.files&&b.files.length } }));
+    try {
+      const raw = localStorage.getItem(estKey(currentCustomerCode));
+      if(raw){ const arr=JSON.parse(raw); const ea=Array.isArray(arr)?arr:[arr]; ea.forEach(e=>events.push({ date:e.date||'', type:'estimation', title:`Estimation: ${e.domain||'General'}`, desc:`₹${Number(e.amount||0).toLocaleString('en-IN')}${e.notes?' — '+e.notes:''}`, extras:{} })); }
+    } catch(err){}
+    const aprs = JSON.parse(localStorage.getItem(approvalsKey(currentCustomerCode)) || '[]');
+    aprs.forEach(a => events.push({ date:a.date||'', type:'approval', title:`Approval: ${a.title}`, desc:`Status: ${a.status}${a.comment?' — '+a.comment:''}`, extras:{} }));
+    const delays = JSON.parse(localStorage.getItem(delaysKey(currentCustomerCode)) || '[]');
+    delays.forEach(d => events.push({ date:d.date||'', type:'delay', title:`⚠ Delay: ${d.domain}`, desc:d.reason||'', extras:{} }));
+    events.sort((a,b)=>(b.date).localeCompare(a.date));
+    if(!events.length){ wrap.innerHTML='<div class="note-muted">No events recorded yet.</div>'; return; }
+    const iconMap = {
+      daily:{ cls:'sti-daily', icon:'fa-camera' }, bill:{ cls:'sti-bill', icon:'fa-file-invoice' },
+      estimation:{ cls:'sti-estimation', icon:'fa-rupee-sign' }, approval:{ cls:'sti-image', icon:'fa-check-square' },
+      delay:{ cls:'sti-suggestion', icon:'fa-triangle-exclamation' }
+    };
+    wrap.innerHTML = events.map(ev => {
+      const ic = iconMap[ev.type] || { cls:'sti-suggestion', icon:'fa-bell' };
+      const chips = [];
+      if(ev.extras.workers) chips.push(`<span class="sti-chip"><i class="fa fa-users"></i> ${escapeHtml(String(ev.extras.workers))} workers</span>`);
+      if(ev.extras.dpr) chips.push(`<span class="sti-chip"><i class="fa fa-tasks"></i> ${escapeHtml(ev.extras.dpr)}</span>`);
+      if(ev.extras.imgCount) chips.push(`<span class="sti-chip"><i class="fa fa-camera"></i> ${ev.extras.imgCount} photo${ev.extras.imgCount>1?'s':''}</span>`);
+      if(ev.extras.fileCount) chips.push(`<span class="sti-chip"><i class="fa fa-paperclip"></i> ${ev.extras.fileCount} file${ev.extras.fileCount>1?'s':''}</span>`);
+      return `<div class="smart-timeline-item">
+        <div class="sti-icon ${ic.cls}"><i class="fa ${ic.icon}"></i></div>
+        <div class="sti-body">
+          <div class="sti-date-label"><i class="fa fa-calendar"></i> ${escapeHtml(ev.date||'—')}</div>
+          <div class="sti-title">${escapeHtml(ev.title)}</div>
+          <div class="sti-desc">${escapeHtml(ev.desc)}</div>
+          ${chips.length ? `<div class="sti-chips">${chips.join('')}</div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ===== DOCUMENT LIBRARY =====
+  function saveDocLibUpload(){
+    if(!currentBuilderProject){ showNotification("Open a project first"); return; }
+    const name = $('docLibName').value.trim();
+    const category = $('docLibCategory').value;
+    const file = $('docLibFile').files[0];
+    const status = $('docLibStatus');
+    if(!name || !file){ status.textContent='Please enter document name and select a file.'; return; }
+    status.textContent = 'Uploading…';
+    readFileForStorage(file).then(fileObj => {
+      const docs = JSON.parse(localStorage.getItem(docLibKey(currentBuilderProject)) || '[]');
+      const now = new Date();
+      const localDate = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+      docs.push({ name, category, data: fileObj.data, fileType: file.type, isPDF: fileObj.isPDF, date: localDate, uploadedAt: now.toLocaleString() });
+      localStorage.setItem(docLibKey(currentBuilderProject), JSON.stringify(docs));
+      saveHistory(currentBuilderProject, 'Document', 'Document uploaded: '+name);
+      status.textContent='Document uploaded successfully!';
+      $('docLibName').value=''; $('docLibFile').value='';
+      showNotification('Document uploaded!');
+    }).catch(() => { status.textContent='Upload failed. File may be too large.'; });
+  }
+
+  function renderDocLibraryForCustomer(){
+    if(!currentCustomerCode) return;
+    const wrap = $('customerDocLibView');
+    if(!wrap) return;
+    const docs = JSON.parse(localStorage.getItem(docLibKey(currentCustomerCode)) || '[]');
+    if(!docs.length){ wrap.innerHTML='<div class="note-muted">No documents uploaded yet.</div>'; return; }
+    const catIcons = { 'Structural Drawing':'fa-drafting-compass','Electrical Layout':'fa-bolt','Plumbing Layout':'fa-wrench','Government Approval':'fa-landmark','3D Render':'fa-cube','Other':'fa-file-alt' };
+    wrap.innerHTML = `<div class="doc-grid">${docs.map(doc => {
+      const icon = catIcons[doc.category] || 'fa-file-alt';
+      const isImg = doc.fileType && doc.fileType.startsWith('image/');
+      const isPDF = doc.fileType === 'application/pdf' || doc.isPDF;
+      // For PDFs, create a fresh Blob URL for reliable viewing
+      const viewHref = isPDF ? (restorePDFBlobUrl(doc) || doc.data || '#') : (doc.data || '#');
+      return `<div class="doc-card">
+        ${isImg ? `<img src="${doc.data}" style="width:100%;height:80px;object-fit:cover;border-radius:var(--radius-sm);border:1.5px solid var(--border);margin-bottom:4px;cursor:pointer;" onclick="openLightbox(this.src)">` : `<div class="doc-icon"><i class="fa ${icon}"></i></div>`}
+        <div class="doc-name">${escapeHtml(doc.name)}</div>
+        <div class="doc-meta"><i class="fa fa-tag"></i> ${escapeHtml(doc.category)}</div>
+        <div class="doc-meta"><i class="fa fa-calendar"></i> ${escapeHtml(doc.date||'')}</div>
+        <div class="doc-actions">
+          ${isPDF
+            ? `<a href="${viewHref}" target="_blank" class="btn-doc"><i class="fa fa-eye"></i> View</a>
+               <a href="${doc.data}" download="${escapeHtml(doc.name)}" class="btn-doc"><i class="fa fa-download"></i> Save</a>`
+            : `<a href="${doc.data}" target="_blank" class="btn-doc"><i class="fa fa-external-link-alt"></i> Open</a>
+               <a href="${doc.data}" download="${escapeHtml(doc.name)}" class="btn-doc"><i class="fa fa-download"></i> Save</a>`
+          }
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  }
+
+  // ===== DELAY ALERTS =====
+  function saveDelayAlert(){
+    if(!currentBuilderProject){ showNotification("Open a project first"); return; }
+    const domain = $('delayDomain').value;
+    const date = $('delayDate').value;
+    const reason = $('delayReason').value.trim();
+    const status = $('delayAlertStatus');
+    if(!domain || !date || !reason){ status.textContent='Please fill all fields.'; return; }
+    const delays = JSON.parse(localStorage.getItem(delaysKey(currentBuilderProject)) || '[]');
+    const now = new Date();
+    delays.push({ domain, date, reason, reportedAt:now.toLocaleString() });
+    delays.sort((a,b)=>new Date(b.date)-new Date(a.date));
+    localStorage.setItem(delaysKey(currentBuilderProject), JSON.stringify(delays));
+    saveHistory(currentBuilderProject, 'Delay', 'Delay reported for '+domain+': '+reason);
+    status.textContent='Delay alert sent to customer.';
+    $('delayReason').value=''; $('delayDate').value='';
+    showNotification('Delay alert sent!');
+  }
+
+  function renderDelaysForCustomer(){
+    if(!currentCustomerCode) return;
+    const wrap = $('customerDelaysView');
+    if(!wrap) return;
+    const delays = JSON.parse(localStorage.getItem(delaysKey(currentCustomerCode)) || '[]');
+    if(!delays.length){ wrap.innerHTML='<div class="note-muted"><i class="fa fa-circle-check" style="color:var(--success);"></i> No delay alerts. Your project is on track!</div>'; return; }
+    wrap.innerHTML = delays.map(d => `
+      <div class="delay-item">
+        <div class="delay-icon"><i class="fa fa-triangle-exclamation"></i></div>
+        <div>
+          <div class="delay-title"><i class="fa fa-layer-group"></i> ${escapeHtml(d.domain)}</div>
+          <div class="delay-desc">${escapeHtml(d.reason)}</div>
+          <div class="delay-date"><i class="fa fa-calendar"></i> Issue Date: ${escapeHtml(d.date)} &nbsp;·&nbsp; <i class="fa fa-clock"></i> Reported: ${escapeHtml(d.reportedAt||'')}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  function renderSmartAlerts(){
+    if(!currentCustomerCode) return;
+    const area = $('smartAlertsArea');
+    if(!area) return;
+    const logs = JSON.parse(localStorage.getItem(updatesKey(currentCustomerCode)) || '[]');
+    const alerts = [];
+
+    if(!logs.length){
+      alerts.push({ type:'warn', icon:'fa-triangle-exclamation', msg:'No updates uploaded yet. Your builder will start uploading site progress soon.' });
+    } else {
+      // Check days since last update
+      const sortedDates = [...new Set(logs.map(l=>l.date))].sort();
+      const lastDate = sortedDates[sortedDates.length - 1];
+      if(lastDate){
+        const diff = Math.floor((new Date() - new Date(lastDate)) / 86400000);
+        if(diff >= 4) alerts.push({ type:'warn', icon:'fa-clock', msg:`No site updates uploaded for ${diff} day${diff>1?'s':''}. Ask your builder for an update.` });
+      }
+
+      // Check completed domains
+      const completedDomains = [...new Set(logs.map(l=>l.domain))];
+      if(completedDomains.length){
+        const last = completedDomains[completedDomains.length-1];
+        alerts.push({ type:'success', icon:'fa-circle-check', msg:`${last} work is currently active on your site.` });
+      }
+
+      // Estimate alert
+      try {
+        const raw = localStorage.getItem(estKey(currentCustomerCode));
+        if(raw){
+          const arr = JSON.parse(raw);
+          const estList = Array.isArray(arr) ? arr : [arr];
+          let total = 0; estList.forEach(e => { total += Number(e.amount)||0; });
+          if(total > 0) alerts.push({ type:'info', icon:'fa-rupee-sign', msg:`Total estimation so far: ₹${total.toLocaleString('en-IN')}` });
+        }
+      } catch(e){}
+
+      // Week activity count
+      const oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      const weekLogs = logs.filter(l => l.date && new Date(l.date) >= oneWeekAgo);
+      if(weekLogs.length > 0) alerts.push({ type:'info', icon:'fa-chart-line', msg:`${weekLogs.length} update${weekLogs.length>1?'s':''} uploaded in the last 7 days.` });
+    }
+
+    area.innerHTML = alerts.map(a => `
+      <div class="alert-card alert-${a.type}">
+        <i class="fa ${a.icon}"></i>
+        <span>${a.msg}</span>
+      </div>`).join('');
+  }
+
+  // ===== QUICK DOMAIN FILTERS =====
+  function renderQuickFilters(){
+    if(!currentCustomerCode) return;
+    const row = $('domainFilterRow');
+    if(!row) return;
+    const logs = JSON.parse(localStorage.getItem(updatesKey(currentCustomerCode)) || '[]');
+    const usedDomains = [...new Set(logs.map(l=>l.domain))].filter(Boolean);
+    if(!usedDomains.length){ row.innerHTML=''; return; }
+    const allDomains = ['All', ...usedDomains];
+    row.innerHTML = allDomains.map(d => `
+      <button class="quick-filter-btn${d===_activeDomainFilter?' active':''}" onclick="setDomainFilter('${escapeHtml(d)}')">${d}</button>
+    `).join('');
+  }
+  function setDomainFilter(domain){
+    _activeDomainFilter = domain;
+    renderQuickFilters();
+    renderUpdatesForCode(currentCustomerCode);
+  }
+
+  // ===== DOMAIN ANALYTICS =====
+  function renderDomainAnalytics(){
+    if(!currentCustomerCode) return;
+    const logs = JSON.parse(localStorage.getItem(updatesKey(currentCustomerCode)) || '[]');
+    const grid = $('analyticsGrid');
+    const progressList = $('domainProgressList');
+    const healthCard = $('projectHealthCard');
+    if(!grid) return;
+
+    const totalUpdates = logs.length;
+    const usedDomains = [...new Set(logs.map(l=>l.domain))].filter(Boolean);
+    const completedDomains = usedDomains.length;
+
+    // Most active domain
+    const domainCounts = {};
+    DOMAINS.forEach(d => { domainCounts[d] = 0; });
+    logs.forEach(l => { if(l.domain) domainCounts[l.domain] = (domainCounts[l.domain]||0) + 1; });
+    const mostActive = Object.entries(domainCounts).sort((a,b)=>b[1]-a[1])[0];
+
+    // Week count
+    const oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate()-7);
+    const weekCount = logs.filter(l => l.date && new Date(l.date) >= oneWeekAgo).length;
+
+    grid.innerHTML = `
+      <div class="analytics-mini">
+        <div class="analytics-mini-label"><i class="fa fa-fire"></i> Most Active Domain</div>
+        <div class="analytics-mini-value" style="font-size:14px;line-height:1.3;">${mostActive && mostActive[1]>0 ? escapeHtml(mostActive[0]) : '—'}</div>
+        <div class="analytics-mini-sub">${mostActive && mostActive[1]>0 ? mostActive[1]+' updates' : 'No data yet'}</div>
+      </div>
+      <div class="analytics-mini">
+        <div class="analytics-mini-label"><i class="fa fa-layer-group"></i> Domains Active</div>
+        <div class="analytics-mini-value">${completedDomains} / ${DOMAINS.length}</div>
+        <div class="analytics-mini-sub">${Math.round(completedDomains/DOMAINS.length*100)}% coverage</div>
+      </div>
+      <div class="analytics-mini">
+        <div class="analytics-mini-label"><i class="fa fa-camera"></i> Total Updates</div>
+        <div class="analytics-mini-value">${totalUpdates}</div>
+        <div class="analytics-mini-sub">All time</div>
+      </div>
+      <div class="analytics-mini">
+        <div class="analytics-mini-label"><i class="fa fa-calendar-week"></i> This Week</div>
+        <div class="analytics-mini-value">${weekCount}</div>
+        <div class="analytics-mini-sub">Last 7 days</div>
+      </div>
+    `;
+
+    // Domain progress bars
+    if(progressList){
+      const maxCount = Math.max(...Object.values(domainCounts), 1);
+      progressList.innerHTML = DOMAINS.map(d => {
+        const cnt = domainCounts[d] || 0;
+        const pct = Math.round(cnt / maxCount * 100);
+        const hasDomain = cnt > 0;
+        const badgeCls = hasDomain ? 'badge-completed' : 'badge-planned';
+        const badgeTxt = hasDomain ? 'Active' : 'Pending';
+        return `<div class="domain-progress-row">
+          <div class="domain-progress-name" title="${escapeHtml(d)}">${escapeHtml(d)}</div>
+          <div class="domain-progress-bar-wrap"><div class="domain-progress-bar-fill" style="width:${pct}%"></div></div>
+          <div class="domain-progress-pct">${cnt}</div>
+          <span class="status-badge ${badgeCls}" style="font-size:10px;padding:2px 8px;">${badgeTxt}</span>
+        </div>`;
+      }).join('');
+    }
+
+    // Project Health
+    if(healthCard){
+      const pct = Math.round(completedDomains/DOMAINS.length*100);
+      const lastDateArr = [...new Set(logs.map(l=>l.date))].sort();
+      const lastDate = lastDateArr[lastDateArr.length-1];
+      const daysSince = lastDate ? Math.floor((new Date()-new Date(lastDate))/86400000) : 999;
+      let hClass='health-good', hIcon='🟢', hTitle='Project Health: GOOD', hDesc='Updates are regular and project is progressing well.';
+      if(daysSince >= 7 || pct < 15){
+        hClass='health-bad'; hIcon='🔴'; hTitle='⚠ Delayed Progress Detected';
+        hDesc = daysSince >= 7 ? `No updates for ${daysSince} days. Contact your builder.` : 'Very few domains have been started.';
+      } else if(daysSince >= 4 || pct < 40){
+        hClass='health-warn'; hIcon='🟠'; hTitle='Project Health: ATTENTION NEEDED';
+        hDesc='Progress is slow or updates are infrequent.';
+      }
+      healthCard.innerHTML = `<div class="health-card ${hClass}"><div class="health-icon">${hIcon}</div><div><div class="health-title">${hTitle}</div><div class="health-desc">${hDesc}</div></div></div>`;
+    }
+  }
+
+  // ===== ACTIVITY FEED =====
+  function renderActivityFeed(){
+    if(!currentCustomerCode) return;
+    const container = $('activityFeedList');
+    if(!container) return;
+    const history = JSON.parse(localStorage.getItem(historyKey(currentCustomerCode)) || '[]');
+    if(!history.length){
+      container.innerHTML = '<p class="note-muted">No activity recorded yet.</p>';
+      return;
+    }
+    const iconMap = {
+      'Daily Update': { icon:'fa-camera', color:'var(--accent)' },
+      '3D Upload': { icon:'fa-cube', color:'var(--accent-2)' },
+      'Estimation': { icon:'fa-rupee-sign', color:'var(--success)' },
+      'Suggestion': { icon:'fa-comments', color:'var(--accent-soft)' },
+    };
+    container.innerHTML = [...history].reverse().slice(0,30).map(item => {
+      const ic = iconMap[item.type] || { icon:'fa-bell', color:'var(--text-muted)' };
+      return `<div class="activity-feed-item">
+        <div class="activity-icon"><i class="fa ${ic.icon}" style="color:${ic.color};"></i></div>
+        <div>
+          <div class="activity-text">${escapeHtml(item.message)}</div>
+          <div class="activity-time"><i class="fa fa-clock"></i> ${escapeHtml(item.timestamp||'')} · ${escapeHtml(item.type)}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+</script>
+<script>
+  // ===== Backend API Bridge =====
+  // The original page renders from browser storage. This bridge keeps that UI intact
+  // while syncing every important action with the Express/Supabase backend.
+  const B2C_API_BASE = localStorage.getItem('b2c_api_base') || 'https://construction-backend-7yhd.onrender.com/api';
+  const b2cSession = {
+    get builderToken(){ return localStorage.getItem('b2c_builder_token') || ''; },
+    set builderToken(v){ localStorage.setItem('b2c_builder_token', v); },
+    get customerToken(){ return localStorage.getItem('b2c_customer_token') || ''; },
+    set customerToken(v){ localStorage.setItem('b2c_customer_token', v); }
+  };
+
+  async function apiRequest(path, options = {}, role = 'builder'){
+    const headers = options.headers || {};
+    const token = role === 'customer' ? b2cSession.customerToken : b2cSession.builderToken;
+    if(token) headers.Authorization = 'Bearer ' + token;
+    if(options.body && !(options.body instanceof FormData)) headers['Content-Type'] = 'application/json';
+    const res = await fetch(B2C_API_BASE + path, { ...options, headers });
+    const json = await res.json().catch(() => ({}));
+    if(!res.ok || json.success === false) throw new Error(json.message || 'Request failed');
+    return json.data || {};
+  }
+
+  function toLocalDate(value){
+    if(!value) return '';
+    const d = new Date(value);
+    if(Number.isNaN(d.getTime())) return String(value).slice(0, 10);
+    return d.toISOString().slice(0, 10);
+  }
+
+  async function syncProjectToLocal(code, role){
+    try {
+      const [progress, estimations, planned, bills, feedback, approvals, docs, delays, activity] = await Promise.all([
+        apiRequest('/progress/' + code, {}, role),
+        apiRequest('/estimations/' + code, {}, role),
+        apiRequest('/uploads/' + code + '/planned-image', {}, role),
+        apiRequest('/uploads/' + code + '/bill', {}, role),
+        apiRequest('/feedback/' + code, {}, role),
+        apiRequest('/approvals/' + code, {}, role),
+        apiRequest('/uploads/' + code + '/document', {}, role),
+        apiRequest('/delays/' + code, {}, role),
+        apiRequest('/projects/' + code + '/activity', {}, role)
+      ]);
+
+      localStorage.setItem(updatesKey(code), JSON.stringify((progress.updates || []).map(u => ({
+        domain: u.domain,
+        workers: u.workers,
+        date: toLocalDate(u.date),
+        text: u.description,
+        images: (u.images || []).map(f => f.url),
+        dprStatus: u.dprStatus,
+        uploadedBy: u.builder
+      }))));
+
+      localStorage.setItem(estKey(code), JSON.stringify((estimations.estimations || []).reverse().map(e => ({
+        domain: e.domain,
+        amount: e.amount,
+        notes: e.notes,
+        date: toLocalDate(e.date || e.createdAt),
+        time: e.createdAt
+      }))));
+
+      const plannedFiles = planned.files || [];
+      if(plannedFiles.length){
+        localStorage.setItem(threeDKey(code), JSON.stringify({
+          desc: plannedFiles[0].description || '',
+          images: plannedFiles.map(f => f.url),
+          date: toLocalDate(plannedFiles[0].createdAt),
+          time: plannedFiles[0].createdAt
+        }));
+      }
+
+      localStorage.setItem(billsKey(code), JSON.stringify((bills.files || []).map(f => ({
+        domain: f.domain,
+        date: toLocalDate(f.createdAt),
+        desc: f.description || f.originalName,
+        files: [{ name: f.originalName, data: f.url, type: f.mimeType, fileType: f.mimeType, isPDF: f.mimeType === 'application/pdf' }],
+        uploadedAt: new Date(f.createdAt).toLocaleString()
+      }))));
+
+      localStorage.setItem(suggKey(code), JSON.stringify((feedback.feedback || []).map(f => ({
+        time: f.createdAt,
+        date: toLocalDate(f.workDate || f.createdAt),
+        message: f.message
+      }))));
+
+      localStorage.setItem(approvalsKey(code), JSON.stringify((approvals.approvals || []).map(a => ({
+        id: a._id,
+        title: a.title,
+        domain: a.domain,
+        desc: a.description,
+        type: a.type,
+        status: a.status,
+        comment: a.customerComment || '',
+        date: toLocalDate(a.createdAt),
+        uploadedAt: new Date(a.createdAt).toLocaleString(),
+        files: (a.files || []).map(f => ({ name: f.originalName, data: f.url, type: f.mimeType, fileType: f.mimeType, isPDF: f.mimeType === 'application/pdf' }))
+      }))));
+
+      localStorage.setItem(docLibKey(code), JSON.stringify((docs.files || []).map(f => ({
+        name: f.description || f.originalName,
+        category: f.domain || 'Other',
+        data: f.url,
+        type: f.mimeType,
+        fileType: f.mimeType,
+        isPDF: f.mimeType === 'application/pdf',
+        date: toLocalDate(f.createdAt),
+        uploadedAt: new Date(f.createdAt).toLocaleString()
+      }))));
+
+      localStorage.setItem(delaysKey(code), JSON.stringify((delays.delays || []).map(d => ({
+        domain: d.domain,
+        date: toLocalDate(d.date),
+        reason: d.reason,
+        reportedAt: new Date(d.createdAt).toLocaleString()
+      }))));
+
+      localStorage.setItem(historyKey(code), JSON.stringify((activity.logs || []).map(a => ({
+        type: a.type,
+        message: a.message,
+        timestamp: new Date(a.createdAt).toLocaleString(),
+        date: toLocalDate(a.date || a.createdAt)
+      }))));
+    } catch(err) {
+      console.warn('Backend sync failed:', err.message);
+      try { showNotification('Could not sync from server: ' + err.message, 4500); } catch(e){}
+    }
+  }
+
+  async function restoreSessionFromBackend(){
+    // Customer session restore
+    try {
+      const code = localStorage.getItem(B2C_LAST_CUSTOMER_CODE_KEY) || '';
+      if(code && /^\d{10}$/.test(code) && b2cSession.customerToken){
+        currentCustomerCode = code;
+        $('customer-dashboard').style.display = 'block';
+        $('custCodeDisplay').textContent = code;
+        await syncProjectToLocal(code, 'customer');
+        showCustomerTab('updates');
+        renderStatsDashboard();
+        renderUpdatesForCode(code);
+        renderCustomerEstimation();
+        renderCustomer3D();
+        renderPhases();
+        renderMilestoneTimeline();
+        renderSmartAlerts();
+        renderQuickFilters();
+      }
+    } catch(e) {}
+
+    // Builder session restore (login + last opened project)
+    try {
+      const code = localStorage.getItem(B2C_LAST_BUILDER_PROJECT_KEY) || '';
+      if(code && /^\d{10}$/.test(code) && b2cSession.builderToken){
+        builderLoggedIn = true;
+        currentBuilderProject = code;
+        $('builderDashboard').style.display = 'block';
+        $('builderProjectArea').style.display = 'block';
+        $('builderProjectCodeDisplay').textContent = code;
+        await syncProjectToLocal(code, 'builder');
+        renderBuilderSuggestions();
+        await renderBuilderProjectsList();
+      } else if(b2cSession.builderToken) {
+        // Token exists, but no opened project yet
+        builderLoggedIn = true;
+        $('builderDashboard').style.display = 'block';
+        await renderBuilderProjectsList();
+      }
+    } catch(e) {}
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    restoreSessionFromBackend();
+  });
+
+  async function renderBuilderProjectsList(){
+    const list = $('builderProjectsList');
+    if(!list) return;
+    try {
+      const data = await apiRequest('/projects');
+      const projects = data.projects || [];
+      if(!projects.length){
+        list.innerHTML = "<div class='note-muted'>No projects opened yet. Enter a 10-digit project code to create one.</div>";
+        return;
+      }
+      list.innerHTML = '';
+      projects.forEach(project => {
+        const code = project.code || '';
+        const card = document.createElement('div');
+        card.className = 'stat-card';
+        card.innerHTML = `
+          <h3>${escapeHtml(code)}</h3>
+          <p>${escapeHtml(project.title || 'Construction Project')}</p>
+          <small>${Number(project.completionPercentage || 0)}% complete</small><br>
+          <button class="btn btn-primary btn-sm" onclick="builderQuickOpen('${escapeHtml(code)}')" style="margin-top:8px;">Open</button>
+        `;
+        list.appendChild(card);
+      });
+    } catch(err) {
+      list.innerHTML = "<div class='note-muted'>Login as builder to load projects from Supabase.</div>";
+    }
+  }
+
+  async function loginBuilder(){
+    const name = $('builderName').value.trim();
+    const msg = $('builderLoginMsg');
+    if(!name){ msg.textContent = 'Enter builder username.'; return; }
+    const username = name.toLowerCase().replace(/[^a-z0-9_]/g, '_');
+    const password = username + '_123456';
+    try {
+      let data;
+      try {
+        data = await apiRequest('/auth/builder/login', { method:'POST', body:JSON.stringify({ username, password }) });
+      } catch(e) {
+        data = await apiRequest('/auth/builder/register', { method:'POST', body:JSON.stringify({ name, username, password, companyName:name }) });
+      }
+      b2cSession.builderToken = data.token;
+      builderLoggedIn = true;
+      msg.style.color = 'var(--success)';
+      msg.textContent = 'Logged in securely as builder.';
+      $('builderDashboard').style.display = 'block';
+      $('builderNameDisplay').textContent = data.user.name || name;
+      $('builderProjectArea').style.display = 'none';
+      currentBuilderProject = null;
+      try { localStorage.removeItem(B2C_LAST_BUILDER_PROJECT_KEY); } catch(e){}
+      renderBuilderProjectsList();
+      scrollToEl($('builderDashboard'));
+      showNotification('Builder backend login complete.');
+    } catch(err) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = err.message;
+    }
+  }
+
+  async function openBuilderProject(){
+    const code = $('builderProjectCode').value.trim();
+    const msg = $('builderProjectMsg');
+    if(!builderLoggedIn){ msg.textContent = 'Login as builder first.'; return; }
+    if(code.length !== 10 || !/^\d+$/.test(code)){ msg.textContent = 'Enter a valid 10-digit project code.'; return; }
+    try {
+      try {
+        await apiRequest('/projects/' + code);
+      } catch(e) {
+        await apiRequest('/projects', { method:'POST', body:JSON.stringify({ code, title:'Construction Project', customerName:'Customer ' + code }) });
+      }
+      currentBuilderProject = code;
+      try { localStorage.setItem(B2C_LAST_BUILDER_PROJECT_KEY, code); } catch(e){}
+      $('builderProjectArea').style.display = 'block';
+      $('builderProjectCodeDisplay').textContent = code;
+      await syncProjectToLocal(code, 'builder');
+      renderBuilderSuggestions();
+      await renderBuilderProjectsList();
+      msg.style.color = 'var(--success)';
+      msg.textContent = 'Project opened from backend.';
+      scrollToEl($('builderProjectArea'));
+    } catch(err) {
+      msg.style.color = 'var(--danger)';
+      msg.textContent = err.message;
+    }
+  }
+
+  async function enterCustomerPortal(){
+    const code = $('custCodeInput').value.trim();
+    if(code.length !== 10 || !/^\d+$/.test(code)){ $('custLoginMsg').textContent = 'Please enter a valid 10-digit number.'; return; }
+    try {
+      const data = await apiRequest('/auth/customer/login', { method:'POST', body:JSON.stringify({ projectCode:code }) }, 'customer');
+      b2cSession.customerToken = data.token;
+      currentCustomerCode = code;
+      try { localStorage.setItem(B2C_LAST_CUSTOMER_CODE_KEY, code); } catch(e){}
+      $('custLoginMsg').style.color = 'var(--success)';
+      $('custLoginMsg').textContent = 'Login successful. Opening your dashboard...';
+      $('customer-dashboard').style.display = 'block';
+      $('custCodeDisplay').textContent = code;
+      await syncProjectToLocal(code, 'customer');
+      showCustomerTab('updates');
+      renderStatsDashboard();
+      renderUpdatesForCode(code);
+      renderCustomerEstimation();
+      renderCustomer3D();
+      renderPhases();
+      renderMilestoneTimeline();
+      renderSmartAlerts();
+      renderQuickFilters();
+      scrollToEl($('customer-dashboard'));
+    } catch(err) {
+      $('custLoginMsg').style.color = 'var(--danger)';
+      $('custLoginMsg').textContent = err.message;
+    }
+  }
+
+  async function saveEstimation(){
+    if(!currentBuilderProject){ $('estStatus').textContent='Open a project code first.'; return; }
+    const body = { domain:$('estDomain').value, amount:Number($('estAmount').value), notes:$('estNotes').value.trim() };
+    try {
+      await apiRequest('/estimations/' + currentBuilderProject, { method:'POST', body:JSON.stringify(body) });
+      await syncProjectToLocal(currentBuilderProject, 'builder');
+      $('estStatus').style.color='var(--success)';
+      $('estStatus').textContent='Estimation saved to database.';
+      showNotification('Estimation saved!');
+    } catch(err){ $('estStatus').textContent = err.message; }
+  }
+
+  async function saveDailyUpdate(){
+    if(!currentBuilderProject){ $('updStatus').textContent='Open a project code first.'; return; }
+    const fd = new FormData();
+    fd.append('domain', $('dailyDomain').value);
+    fd.append('date', $('updDate').value);
+    fd.append('description', $('updText').value.trim());
+    fd.append('dprStatus', $('dailyStatus').value);
+    fd.append('workers', $('dailyWorkers').value || 0);
+    (_uploadFiles.daily || []).forEach(f => fd.append('images', f));
+    try {
+      await apiRequest('/progress/' + currentBuilderProject, { method:'POST', body:fd });
+      await syncProjectToLocal(currentBuilderProject, 'builder');
+      _uploadFiles.daily = [];
+      renderFilePreviews('daily', []);
+      $('updStatus').style.color='var(--success)';
+      $('updStatus').textContent='Daily work uploaded to database.';
+      showNotification('Work update uploaded!');
+    } catch(err){ $('updStatus').textContent = err.message; }
+  }
+
+  async function save3DView(){
+    if(!currentBuilderProject){ $('threeDStatus').textContent='Open a project code first.'; return; }
+    const fd = new FormData();
+    fd.append('description', $('threeDDesc').value.trim());
+    (_uploadFiles.threed || []).forEach(f => fd.append('files', f));
+    try {
+      await apiRequest('/uploads/' + currentBuilderProject + '/planned-images', { method:'POST', body:fd });
+      await syncProjectToLocal(currentBuilderProject, 'builder');
+      _uploadFiles.threed = [];
+      renderFilePreviews('threed', []);
+      $('threeDStatus').style.color='var(--success)';
+      $('threeDStatus').textContent='Planned images uploaded to database.';
+      showNotification('Planned images uploaded!');
+    } catch(err){ $('threeDStatus').textContent = err.message; }
+  }
+
+  async function saveBillUpload(){
+    const fd = new FormData();
+    fd.append('domain', $('billDomain').value);
+    fd.append('description', $('billDesc').value.trim());
+    Array.from($('billFile').files || []).forEach(f => fd.append('files', f));
+    try {
+      await apiRequest('/uploads/' + currentBuilderProject + '/bills', { method:'POST', body:fd });
+      await syncProjectToLocal(currentBuilderProject, 'builder');
+      $('billStatus').style.color='var(--success)';
+      $('billStatus').textContent='Bills uploaded to database.';
+      showNotification('Bills uploaded');
+    } catch(err){ $('billStatus').textContent = err.message; }
+  }
+
+  async function saveApprovalRequest(){
+    const fd = new FormData();
+    fd.append('title', $('aprTitle').value.trim());
+    fd.append('domain', $('aprDomain').value);
+    fd.append('description', $('aprDesc').value.trim());
+    fd.append('type', $('aprTypeValue').value);
+    Array.from($('aprFile').files || []).forEach(f => fd.append('files', f));
+    try {
+      await apiRequest('/approvals/' + currentBuilderProject, { method:'POST', body:fd });
+      await syncProjectToLocal(currentBuilderProject, 'builder');
+      $('aprStatus').style.color='var(--success)';
+      $('aprStatus').textContent='Approval request sent through backend.';
+      showNotification('Approval request sent!');
+    } catch(err){ $('aprStatus').textContent = err.message; }
+  }
+
+  async function submitApproval(idx, decision){
+    const approvals = JSON.parse(localStorage.getItem(approvalsKey(currentCustomerCode)) || '[]');
+    const item = approvals[idx];
+    if(!item || !item.id) return;
+    const comment = ($('aprComment_' + idx) || {}).value || '';
+    await apiRequest('/approvals/' + item.id + '/decision', { method:'PATCH', body:JSON.stringify({ status:decision, comment }) }, 'customer');
+    await syncProjectToLocal(currentCustomerCode, 'customer');
+    renderCustomerApprovals();
+    showNotification(decision === 'Approved' ? 'Approved!' : 'Changes requested');
+  }
+
+  async function saveDocLibUpload(){
+    const fd = new FormData();
+    fd.append('description', $('docLibName').value.trim());
+    fd.append('domain', $('docLibCategory').value);
+    Array.from($('docLibFile').files || []).forEach(f => fd.append('files', f));
+    try {
+      await apiRequest('/uploads/' + currentBuilderProject + '/documents', { method:'POST', body:fd });
+      await syncProjectToLocal(currentBuilderProject, 'builder');
+      $('docLibStatus').style.color='var(--success)';
+      $('docLibStatus').textContent='Document uploaded to database.';
+      showNotification('Document uploaded!');
+    } catch(err){ $('docLibStatus').textContent = err.message; }
+  }
+
+  async function saveDelayAlert(){
+    const body = { domain:$('delayDomain').value, date:$('delayDate').value, reason:$('delayReason').value.trim() };
+    try {
+      await apiRequest('/delays/' + currentBuilderProject, { method:'POST', body:JSON.stringify(body) });
+      await syncProjectToLocal(currentBuilderProject, 'builder');
+      $('delayAlertStatus').style.color='var(--success)';
+      $('delayAlertStatus').textContent='Delay alert saved to database.';
+      showNotification('Delay alert sent!');
+    } catch(err){ $('delayAlertStatus').textContent = err.message; }
+  }
+
+  async function sendCustomerSuggestion(){
+    const msg = $('customerSuggestion').value.trim();
+    const date = $('suggestionDate').value;
+    const status = $('suggestionStatus');
+    try {
+      if(!currentCustomerCode){ status.textContent = 'Enter your project code first.'; return; }
+      await apiRequest('/feedback/' + currentCustomerCode, { method:'POST', body:JSON.stringify({ message:msg, workDate:date }) }, 'customer');
+      await syncProjectToLocal(currentCustomerCode, 'customer');
+      status.style.color = 'var(--success)';
+      status.textContent = 'Your suggestion has been sent to the builder.';
+      $('customerSuggestion').value = '';
+      showNotification('Suggestion sent!');
+    } catch(err){ status.textContent = err.message; }
+  }
+</script>
+</body>
+</html>

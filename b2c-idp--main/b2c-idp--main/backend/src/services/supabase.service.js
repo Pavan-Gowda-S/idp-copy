@@ -29,7 +29,18 @@ const FIELD_MAP = {
   sourceFile: 'source_file',
   refId: 'ref_id',
   customerComment: 'customer_comment',
-  decidedAt: 'decided_at'
+  decidedAt: 'decided_at',
+  phoneNumber: 'phone_number',
+  projectId: 'project_id',
+  userId: 'user_id',
+  mediaUrls: 'media_urls',
+  milestoneName: 'milestone_name',
+  baseAmount: 'base_amount',
+  totalAmountInr: 'total_amount_inr',
+  invoiceUrl: 'invoice_url',
+  otpCode: 'otp_code',
+  expiresAt: 'expires_at',
+  googleId: 'google_id'
 };
 
 const REVERSE_FIELD_MAP = Object.fromEntries(

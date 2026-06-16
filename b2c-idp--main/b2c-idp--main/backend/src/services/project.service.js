@@ -4,9 +4,17 @@ const { CONSTRUCTION_DOMAINS } = require('../utils/domains');
 
 exports.getProjectByCode = async (code) => store.findOne(collections.projects, 'code', '==', code);
 
-exports.assertProjectAccess = (project, req) => {
+exports.getProjectById = async (id) => store.getById(collections.projects, id);
+
+exports.assertProjectAccess = async (project, req) => {
   if (!project) return false;
   if (req.userRole === 'builder') return String(project.builder) === String(req.user._id);
+
+  if (req.authUserId) {
+    const mappings = await store.list(collections.userProjects, [['userId', '==', req.authUserId]]);
+    if (mappings.some((m) => String(m.projectId) === String(project._id))) return true;
+  }
+
   return String(project.customer) === String(req.user._id);
 };
 

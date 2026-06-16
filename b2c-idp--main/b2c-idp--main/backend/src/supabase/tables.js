@@ -3,6 +3,11 @@ module.exports = {
   users: 'users',
   customers: 'customers',
   projects: 'projects',
+  userProjects: 'user_projects',
+  complaints: 'complaints',
+  invoices: 'invoices',
+  changeOrders: 'change_orders',
+  otpSessions: 'otp_sessions',
   files: 'uploads',
   progressUpdates: 'progress_updates',
   estimations: 'estimations',
@@ -15,4 +20,3 @@ module.exports = {
   activityLogs: 'activity_logs',
   aiReports: 'ai_reports'
 };
-

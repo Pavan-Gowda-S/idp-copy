@@ -9,9 +9,9 @@ const { logActivity } = require('../services/activity.service');
 const { createNotification } = require('../services/notification.service');
 const { CONSTRUCTION_DOMAINS } = require('../utils/domains');
 
-exports.codeParam = [param('code').matches(/^\d{10}$/)];
+exports.codeParam = [param('code').trim().notEmpty()];
 exports.createValidation = [
-  body('code').matches(/^\d{10}$/),
+  body('code').optional({ checkFalsy: true }).trim(),
   body('title').optional({ checkFalsy: true }).trim(),
   body('customerName').optional({ checkFalsy: true }).trim(),
   body('customerPhone').optional({ checkFalsy: true }).trim(),
@@ -19,24 +19,26 @@ exports.createValidation = [
 ];
 
 exports.createProject = asyncHandler(async (req, res) => {
-  const exists = await store.findOne(collections.projects, 'code', '==', req.body.code);
+  const projectCode = req.body.code || `PRJ${Date.now().toString().slice(-8)}`;
+  const exists = await store.findOne(collections.projects, 'code', '==', projectCode);
   if (exists) throw new AppError('Project code already exists', 409);
   const customer = await store.create(collections.customers, {
     name: req.body.customerName,
     phone: req.body.customerPhone,
     email: req.body.customerEmail,
-    projectCode: req.body.code
+    projectCode
   });
   await store.create(collections.users, {
-    role: 'customer',
+    role: 'CUSTOMER',
     refId: customer._id,
-    name: customer.name || `Customer ${req.body.code}`,
-    username: req.body.code,
+    name: customer.name || `Customer ${projectCode}`,
+    username: projectCode,
     email: customer.email || '',
+    phoneNumber: customer.phone || '',
     phone: customer.phone || ''
   });
   const project = await store.create(collections.projects, {
-    code: req.body.code,
+    code: projectCode,
     title: req.body.title || 'Construction Project',
     description: req.body.description,
     builder: req.user._id,
@@ -60,7 +62,7 @@ exports.createProject = asyncHandler(async (req, res) => {
     recipientModel: 'Customer',
     project: project._id,
     title: 'Project created',
-    message: `Your project code ${req.body.code} is ready.`,
+    message: `Your project ${projectCode} is ready.`,
     type: 'project'
   });
   created(res, { project, customer }, 'Project created');
@@ -73,20 +75,20 @@ exports.listBuilderProjects = asyncHandler(async (req, res) => {
 
 exports.getProjectByCode = asyncHandler(async (req, res) => {
   const project = await projectService.getProjectByCode(req.params.code);
-  if (!project || !projectService.assertProjectAccess(project, req)) throw new AppError('Project not found', 404);
+  if (!project || !(await projectService.assertProjectAccess(project, req))) throw new AppError('Project not found', 404);
   ok(res, { project }, 'Project loaded');
 });
 
 exports.dashboard = asyncHandler(async (req, res) => {
   const project = await projectService.getProjectByCode(req.params.code);
-  if (!project || !projectService.assertProjectAccess(project, req)) throw new AppError('Project not found', 404);
+  if (!project || !(await projectService.assertProjectAccess(project, req))) throw new AppError('Project not found', 404);
   const summary = await projectService.getDashboardSummary(project._id);
   ok(res, summary, 'Dashboard summary loaded');
 });
 
 exports.activity = asyncHandler(async (req, res) => {
   const project = await projectService.getProjectByCode(req.params.code);
-  if (!project || !projectService.assertProjectAccess(project, req)) throw new AppError('Project not found', 404);
+  if (!project || !(await projectService.assertProjectAccess(project, req))) throw new AppError('Project not found', 404);
   const logs = await store.list(collections.activityLogs, [['project', '==', project._id]], { limit: 100 });
   ok(res, { logs }, 'Activity loaded');
 });

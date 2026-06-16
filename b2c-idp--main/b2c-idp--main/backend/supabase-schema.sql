@@ -1,4 +1,4 @@
--- AI Construction Monitoring System - Supabase SQL setup
+-- Indian Construction SaaS Platform - Supabase SQL setup
 -- Paste this complete file into Supabase Dashboard > SQL Editor > New query > Run.
 
 create extension if not exists "pgcrypto";
@@ -11,48 +11,59 @@ begin
 end;
 $$ language plpgsql;
 
+-- Legacy builder credentials (password / OAuth profile storage)
 create table if not exists builders (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   username text not null unique,
-  email text,
+  email text unique,
   phone text,
   company_name text,
-  password_hash text not null,
+  password_hash text,
+  google_id text,
   is_active boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
+-- Legacy customer profile records (linked via users + user_projects)
 create table if not exists customers (
   id uuid primary key default gen_random_uuid(),
   name text,
   phone text,
   email text,
-  project_code text not null unique check (project_code ~ '^[0-9]{10}$'),
+  project_code text unique,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
+-- Central multi-tenant users table
 create table if not exists users (
   id uuid primary key default gen_random_uuid(),
-  role text not null check (role in ('builder', 'customer')),
-  ref_id uuid not null,
-  name text,
-  username text,
   email text,
+  phone_number text,
+  role text not null check (role in ('BUILDER', 'CUSTOMER')),
+  name text,
+  password_hash text,
+  ref_id uuid,
+  username text,
   phone text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
+create index if not exists idx_users_email on users(email);
+create index if not exists idx_users_phone_number on users(phone_number);
+create index if not exists idx_users_role on users(role);
+
+-- Property profiles linked to a builder account
 create table if not exists projects (
   id uuid primary key default gen_random_uuid(),
-  code text not null unique check (code ~ '^[0-9]{10}$'),
+  code text unique,
   title text not null default 'Construction Project',
   description text,
   builder uuid not null references builders(id) on delete cascade,
-  customer uuid not null references customers(id) on delete cascade,
+  customer uuid references customers(id) on delete set null,
   address text,
   start_date text,
   target_completion_date text,
@@ -64,6 +75,80 @@ create table if not exists projects (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- Customer portfolio: one phone number → many properties
+create table if not exists user_projects (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references users(id) on delete cascade,
+  project_id uuid not null references projects(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  unique(user_id, project_id)
+);
+
+create index if not exists idx_user_projects_user on user_projects(user_id);
+create index if not exists idx_user_projects_project on user_projects(project_id);
+
+-- Service complaints / ticketing
+create table if not exists complaints (
+  id uuid primary key default gen_random_uuid(),
+  project_id uuid not null references projects(id) on delete cascade,
+  user_id uuid references users(id) on delete set null,
+  category text not null check (category in ('Structural', 'Plumbing', 'Electrical', 'Finishing')),
+  description text not null,
+  urgency text not null check (urgency in ('Critical', 'Major', 'Minor')),
+  status text not null default 'Submitted' check (status in ('Submitted', 'In Progress', 'Resolved_Pending', 'Closed')),
+  media_urls text[] not null default '{}',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists idx_complaints_project on complaints(project_id);
+create index if not exists idx_complaints_status on complaints(status);
+
+-- Milestone billing & escrow ledger (INR)
+create table if not exists invoices (
+  id uuid primary key default gen_random_uuid(),
+  project_id uuid not null references projects(id) on delete cascade,
+  milestone_name text not null,
+  base_amount numeric not null default 0,
+  cgst numeric not null default 0,
+  sgst numeric not null default 0,
+  total_amount_inr numeric not null default 0,
+  status text not null default 'Upcoming' check (status in ('Paid', 'Due Now', 'Upcoming')),
+  invoice_url text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists idx_invoices_project on invoices(project_id);
+
+-- Approved upgrade change orders (payments UI)
+create table if not exists change_orders (
+  id uuid primary key default gen_random_uuid(),
+  project_id uuid not null references projects(id) on delete cascade,
+  title text not null,
+  base_amount numeric not null default 0,
+  cgst numeric not null default 0,
+  sgst numeric not null default 0,
+  total_amount_inr numeric not null default 0,
+  status text not null default 'Approved' check (status in ('Approved', 'Pending', 'Rejected')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists idx_change_orders_project on change_orders(project_id);
+
+-- Mock OTP store for customer phone auth (development / staging)
+create table if not exists otp_sessions (
+  id uuid primary key default gen_random_uuid(),
+  phone_number text not null,
+  otp_code text not null,
+  expires_at timestamptz not null,
+  verified boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_otp_sessions_phone on otp_sessions(phone_number);
 
 create table if not exists uploads (
   id uuid primary key default gen_random_uuid(),
@@ -229,6 +314,14 @@ drop trigger if exists users_set_updated_at on users;
 create trigger users_set_updated_at before update on users for each row execute function set_updated_at();
 drop trigger if exists projects_set_updated_at on projects;
 create trigger projects_set_updated_at before update on projects for each row execute function set_updated_at();
+drop trigger if exists user_projects_set_updated_at on user_projects;
+create trigger user_projects_set_updated_at before update on user_projects for each row execute function set_updated_at();
+drop trigger if exists complaints_set_updated_at on complaints;
+create trigger complaints_set_updated_at before update on complaints for each row execute function set_updated_at();
+drop trigger if exists invoices_set_updated_at on invoices;
+create trigger invoices_set_updated_at before update on invoices for each row execute function set_updated_at();
+drop trigger if exists change_orders_set_updated_at on change_orders;
+create trigger change_orders_set_updated_at before update on change_orders for each row execute function set_updated_at();
 drop trigger if exists uploads_set_updated_at on uploads;
 create trigger uploads_set_updated_at before update on uploads for each row execute function set_updated_at();
 drop trigger if exists progress_updates_set_updated_at on progress_updates;

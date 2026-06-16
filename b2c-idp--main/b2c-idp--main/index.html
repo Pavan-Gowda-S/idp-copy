@@ -856,6 +856,70 @@
     /* ===== DELAY ALERT FORM (BUILDER) ===== */
     #delayAlertStatus{font-size:13px;margin-top:8px;color:var(--accent-soft);font-weight:500;}
 
+    /* ===== PAYMENTS & COMPLAINTS ===== */
+    .property-switcher-bar{
+      display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+      padding:14px 18px;margin-bottom:18px;
+      background:var(--gradient-card);border:1.5px solid var(--border);
+      border-radius:var(--radius-md);
+    }
+    .property-switcher-bar label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);}
+    .property-switcher-bar select{
+      min-width:260px;padding:10px 14px;border-radius:var(--radius-sm);
+      border:1.5px solid var(--border);background:var(--bg-elevated);
+      font-family:var(--font-body);font-size:14px;color:var(--text-main);
+    }
+    .escrow-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;}
+    @media(max-width:760px){.escrow-metrics{grid-template-columns:1fr;}}
+    .escrow-metric{
+      background:var(--bg-elevated);border:1.5px solid var(--border);
+      border-radius:var(--radius-md);padding:18px 20px;box-shadow:var(--shadow-tiny);
+    }
+    .escrow-metric-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:8px;}
+    .escrow-metric-value{font-family:var(--font-display);font-size:24px;font-weight:800;color:var(--text-main);}
+    .ledger-table,.complaints-table{width:100%;border-collapse:collapse;margin-top:12px;}
+    .ledger-table th,.ledger-table td,.complaints-table th,.complaints-table td{
+      padding:12px 14px;text-align:left;border-bottom:1px solid var(--border);font-size:13px;
+    }
+    .ledger-table th,.complaints-table th{font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);}
+    .status-badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;}
+    .status-paid{background:rgba(26,127,90,0.15);color:var(--success);}
+    .status-due{background:rgba(200,98,42,0.15);color:var(--accent);}
+    .status-upcoming{background:rgba(107,107,128,0.15);color:var(--text-muted);}
+    .status-submitted{background:rgba(200,98,42,0.12);color:var(--accent);}
+    .status-progress{background:rgba(42,124,111,0.12);color:var(--accent-2);}
+    .status-resolved{background:rgba(232,160,102,0.18);color:var(--accent-soft);}
+    .status-closed{background:rgba(26,127,90,0.15);color:var(--success);}
+    .builder-client-item{
+      display:block;width:100%;text-align:left;padding:14px 16px;margin-bottom:8px;
+      border:1.5px solid var(--border);border-radius:var(--radius-sm);
+      background:var(--bg-elevated);cursor:pointer;transition:all 0.2s;
+    }
+    .builder-client-item:hover,.builder-client-item.active{border-color:var(--accent);box-shadow:var(--shadow-tiny);}
+    .builder-client-item.active{background:var(--gradient-card);}
+    .builder-client-name{font-family:var(--font-display);font-weight:800;font-size:14px;margin-bottom:4px;}
+    .builder-client-meta{font-size:12px;color:var(--text-muted);line-height:1.5;}
+    .modal-overlay{
+      position:fixed;inset:0;background:rgba(26,26,46,0.55);z-index:2000;
+      display:none;align-items:center;justify-content:center;padding:20px;
+    }
+    .modal-overlay.open{display:flex;}
+    .modal-card{
+      background:var(--bg-elevated);border-radius:var(--radius-lg);padding:28px;
+      max-width:520px;width:100%;box-shadow:var(--shadow-large);border:1.5px solid var(--border);
+    }
+    .urgency-tags{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px;}
+    .urgency-tag{
+      border:1.5px solid var(--border);background:var(--bg-soft);padding:8px 14px;
+      border-radius:999px;cursor:pointer;font-size:12px;font-weight:600;
+    }
+    .urgency-tag.selected{border-color:var(--accent);background:rgba(200,98,42,0.12);color:var(--accent);}
+    .google-btn{
+      width:100%;margin-top:10px;background:#fff;color:#333;border:1.5px solid var(--border);
+      display:flex;align-items:center;justify-content:center;gap:10px;
+    }
+    .otp-hint{font-size:12px;color:var(--text-muted);margin-top:8px;}
+
     /* ===== RESPONSIVE TWEAKS ===== */
     @media(max-width:680px){
       .domain-status-grid{grid-template-columns:1fr 1fr;}
@@ -904,21 +968,21 @@
             <div class="portal-icon"><i class="fa fa-user" style="color:var(--accent);"></i></div>
             <div class="portal-badge">Owner</div>
             <div class="portal-title">Customer Portal</div>
-            <p class="portal-text">Enter your 10‑digit project code, see daily site photos, give suggestions and view estimation & planned images.</p>
+            <p class="portal-text">Sign in with your mobile number and OTP to view all your properties, payments, and service tickets.</p>
             <div class="pill-row">
-              <span class="pill"><i class="fa fa-camera"></i> Daily updates</span>
-              <span class="pill"><i class="fa fa-calculator"></i> Estimation</span>
-              <span class="pill"><i class="fa fa-chart-pie"></i> Analytics</span>
+              <span class="pill"><i class="fa fa-building"></i> Multi-property</span>
+              <span class="pill"><i class="fa fa-rupee-sign"></i> Escrow ledger</span>
+              <span class="pill"><i class="fa fa-headset"></i> Complaints</span>
             </div>
           </div>
           <div class="portal-card" onclick="openBuilderFromHero()" tabindex="0">
             <div class="portal-icon"><i class="fa fa-hard-hat" style="color:var(--accent-2);"></i></div>
             <div class="portal-badge">Contractor</div>
             <div class="portal-title">Builder Portal</div>
-            <p class="portal-text">Login as builder, open project and send estimation, planned images and domain-wise daily work logs.</p>
+            <p class="portal-text">Secure email login for builders — manage clients, milestones, complaints, and site progress in one place.</p>
             <div class="pill-row">
-              <span class="pill"><i class="fa fa-calculator"></i> Estimate</span>
-              <span class="pill"><i class="fa fa-image"></i> Planned Images</span>
+              <span class="pill"><i class="fa fa-users"></i> Client roster</span>
+              <span class="pill"><i class="fa fa-shield-alt"></i> Secure login</span>
               <span class="pill"><i class="fa fa-layer-group"></i> Domains</span>
             </div>
           </div>
@@ -932,11 +996,20 @@
 <section id="customer-portal" class="section" style="display:none;">
   <div class="auth-container">
     <div id="customer-login" class="auth-card">
-      <div class="auth-title"><i class="fa fa-user-circle"></i> Customer Login</div>
-      <div class="auth-subtitle">Enter your <b>10‑digit project code</b> to open your dashboard and track construction progress.</div>
-      <label><i class="fa fa-barcode"></i> 10‑digit project code</label>
-      <input id="custCodeInput" maxlength="10" placeholder="Example: 9823456712" autocomplete="off"/>
-      <button class="btn btn-primary" onclick="enterCustomerPortal()"><i class="fa fa-arrow-right"></i> Open Dashboard</button>
+      <div class="auth-title"><i class="fa fa-mobile-alt"></i> Customer Login</div>
+      <div class="auth-subtitle">Sign in with your registered <b>mobile number</b>. We will send a one-time password to verify your account.</div>
+      <div id="customer-phone-step">
+        <label><i class="fa fa-phone"></i> Mobile number (10 digits)</label>
+        <input id="custPhoneInput" maxlength="10" placeholder="Example: 9876543210" autocomplete="tel"/>
+        <button class="btn btn-primary" onclick="sendCustomerOtp()"><i class="fa fa-paper-plane"></i> Send OTP</button>
+        <p class="otp-hint">Demo OTP after send: <strong>123456</strong></p>
+      </div>
+      <div id="customer-otp-step" style="display:none;">
+        <label><i class="fa fa-key"></i> Enter OTP</label>
+        <input id="custOtpInput" maxlength="6" placeholder="6-digit code" autocomplete="one-time-code"/>
+        <button class="btn btn-primary" onclick="verifyCustomerOtp()"><i class="fa fa-unlock"></i> Verify &amp; Open Dashboard</button>
+        <button class="btn btn-sm" style="margin-top:10px;background:transparent;border:1px solid var(--border);" onclick="resetCustomerOtpFlow()"><i class="fa fa-arrow-left"></i> Change number</button>
+      </div>
       <p id="custLoginMsg" style="font-size:13px;margin-top:10px;color:var(--accent-soft);font-weight:500;"></p>
     </div>
   </div>
@@ -950,7 +1023,12 @@
         <i class="fa fa-file-pdf"></i> Download PDF
       </button>
     </div>
-    <p class="section-subtitle" style="margin-bottom:20px;">Project code: <strong id="custCodeDisplay"></strong></p>
+    <div class="property-switcher-bar">
+      <label><i class="fa fa-building"></i> Active Property</label>
+      <select id="propertySwitcher" onchange="switchCustomerProperty(this.value)"></select>
+      <span class="note-muted" id="custPropertyMeta"></span>
+    </div>
+    <p class="section-subtitle" style="margin-bottom:20px;">Signed in as <strong id="custPhoneDisplay"></strong></p>
 
     <!-- Progress bar -->
     <div class="progress-wrapper">
@@ -972,12 +1050,6 @@
 
     <!-- Domain Days Info -->
     <div id="domainDaysInfo" style="margin-top:4px;"></div>
-
-    <!-- Pie Chart -->
-    <div class="card" style="padding:20px 24px;margin-top:0;" id="pieChartCard">
-      <div class="section-title" style="font-size:16px;margin-bottom:2px;"><i class="fa fa-chart-pie"></i> Domain Activity Breakdown</div>
-      <canvas id="domainPieChart" height="120"></canvas>
-    </div>
 
     <!-- Stats grid -->
     <div class="stats-grid" id="statsDashboard">
@@ -1016,11 +1088,11 @@
           <button id="sideCalendar" class="sidebar-item" onclick="showCustomerTab('calendar')">
             <i class="fa fa-calendar"></i><span>Calendar History</span>
           </button>
-          <button id="sideAnalytics" class="sidebar-item" onclick="showCustomerTab('analytics')">
-            <i class="fa fa-chart-bar"></i><span>Analytics</span>
+          <button id="sidePayments" class="sidebar-item" onclick="showCustomerTab('payments')">
+            <i class="fa fa-landmark"></i><span>Payments &amp; Escrow</span>
           </button>
-          <button id="sideActivity" class="sidebar-item" onclick="showCustomerTab('activity')">
-            <i class="fa fa-bolt"></i><span>Activity Feed</span>
+          <button id="sideComplaints" class="sidebar-item" onclick="showCustomerTab('complaints')">
+            <i class="fa fa-headset"></i><span>Complaints</span>
           </button>
           <button id="sideBills" class="sidebar-item" onclick="showCustomerTab('bills')">
             <i class="fa fa-file-invoice"></i><span>Bills</span>
@@ -1034,9 +1106,6 @@
           <button id="sideApprovals" class="sidebar-item" onclick="showCustomerTab('approvals')">
             <i class="fa fa-check-square"></i><span>Approvals</span>
           </button>
-          <button id="sideTimeline" class="sidebar-item" onclick="showCustomerTab('smarttimeline')">
-            <i class="fa fa-stream"></i><span>Smart Timeline</span>
-          </button>
           <button id="sideDocLib" class="sidebar-item" onclick="showCustomerTab('doclibrary')">
             <i class="fa fa-folder-open"></i><span>Documents</span>
           </button>
@@ -1047,8 +1116,6 @@
       </aside>
 
       <div class="main-dashboard-content">
-        <div id="smartAlertsArea" class="smart-alerts" style="margin-bottom:12px;"></div>
-
         <input id="searchUpdates" type="text" placeholder="🔍 Search updates, dates, keywords…" oninput="renderUpdatesForCode(currentCustomerCode)"/>
 
         <!-- Quick Domain Filters -->
@@ -1123,21 +1190,53 @@
           </div>
         </div>
 
-        <!-- Analytics Tab -->
-        <div id="customerAnalytics" class="card" style="display:none;">
-          <h3 class="section-title"><i class="fa fa-chart-bar"></i> Domain Analytics</h3>
-          <p class="section-subtitle">Smart insights from your project data.</p>
-          <div id="projectHealthCard"></div>
-          <div class="domain-analytics-grid" id="analyticsGrid"></div>
-          <div class="section-title" style="font-size:15px;margin-top:10px;margin-bottom:8px;"><i class="fa fa-layer-group"></i> Domain Progress Breakdown</div>
-          <div class="domain-progress-list" id="domainProgressList"></div>
+        <!-- Payments & Escrow Tab -->
+        <div id="customerPayments" class="card" style="display:none;">
+          <h3 class="section-title"><i class="fa fa-landmark"></i> Payments &amp; Escrow</h3>
+          <p class="section-subtitle">Milestone ledger with GST breakdown in Indian Rupees.</p>
+          <div class="escrow-metrics">
+            <div class="escrow-metric">
+              <div class="escrow-metric-label">Total Contract Value</div>
+              <div class="escrow-metric-value" id="escrowContractValue">₹0</div>
+            </div>
+            <div class="escrow-metric">
+              <div class="escrow-metric-label">Total Paid to Date</div>
+              <div class="escrow-metric-value" id="escrowPaidToDate">₹0</div>
+            </div>
+            <div class="escrow-metric">
+              <div class="escrow-metric-label">Amount Due Now</div>
+              <div class="escrow-metric-value" id="escrowDueNow">₹0</div>
+            </div>
+          </div>
+          <div class="section-title" style="font-size:15px;margin-bottom:8px;"><i class="fa fa-list"></i> Milestone Allocations</div>
+          <div style="overflow-x:auto;">
+            <table class="ledger-table">
+              <thead><tr><th>Milestone</th><th>Base (₹)</th><th>CGST</th><th>SGST</th><th>Total (₹)</th><th>Status</th></tr></thead>
+              <tbody id="milestoneLedgerBody"></tbody>
+            </table>
+          </div>
+          <div class="section-title" style="font-size:15px;margin-top:24px;margin-bottom:8px;"><i class="fa fa-file-signature"></i> Approved Upgrade Change Orders</div>
+          <div style="overflow-x:auto;">
+            <table class="ledger-table">
+              <thead><tr><th>Change Order</th><th>Base (₹)</th><th>CGST</th><th>SGST</th><th>Total (₹)</th><th>Status</th></tr></thead>
+              <tbody id="changeOrdersBody"></tbody>
+            </table>
+          </div>
         </div>
 
-        <!-- Activity Feed Tab -->
-        <div id="customerActivity" class="card" style="display:none;">
-          <h3 class="section-title"><i class="fa fa-bolt"></i> Recent Activity Feed</h3>
-          <p class="section-subtitle">All project events in chronological order.</p>
-          <div id="activityFeedList"></div>
+        <!-- Complaints Tab -->
+        <div id="customerComplaints" class="card" style="display:none;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+            <h3 class="section-title" style="margin:0;"><i class="fa fa-headset"></i> Service Complaints</h3>
+            <button class="btn btn-primary btn-sm" style="margin-left:auto;" onclick="openComplaintModal()"><i class="fa fa-plus"></i> File New Complaint</button>
+          </div>
+          <p class="section-subtitle">Track open tickets and confirm closure after builder resolution.</p>
+          <div style="overflow-x:auto;">
+            <table class="complaints-table">
+              <thead><tr><th>ID</th><th>Category</th><th>Urgency</th><th>Description</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="complaintsTableBody"></tbody>
+            </table>
+          </div>
         </div>
 
         <!-- Bills Tab -->
@@ -1176,13 +1275,6 @@
           <div id="customerApprovalsView"><div class="note-muted">No approval requests yet.</div></div>
         </div>
 
-        <!-- Smart Unified Timeline Tab -->
-        <div id="customerSmartTimeline" class="card" style="display:none;">
-          <h3 class="section-title"><i class="fa fa-stream"></i> Smart Unified Timeline</h3>
-          <p class="section-subtitle">Every project event — updates, bills, estimations, suggestions — in one chronological feed.</p>
-          <div id="smartTimelineView"></div>
-        </div>
-
         <!-- Document Library Tab -->
         <div id="customerDocLibrary" class="card" style="display:none;">
           <h3 class="section-title"><i class="fa fa-folder-open"></i> Document Library</h3>
@@ -1202,15 +1294,47 @@
   </div>
 </section>
 
+<!-- Complaint Modal -->
+<div id="complaintModal" class="modal-overlay" onclick="if(event.target===this)closeComplaintModal()">
+  <div class="modal-card">
+    <h3 class="section-title"><i class="fa fa-plus-circle"></i> File New Complaint</h3>
+    <label>Category</label>
+    <select id="complaintCategory">
+      <option value="Structural">Structural</option>
+      <option value="Plumbing">Plumbing</option>
+      <option value="Electrical">Electrical</option>
+      <option value="Finishing">Finishing</option>
+    </select>
+    <label style="margin-top:12px;">Urgency</label>
+    <div class="urgency-tags" id="urgencyTags">
+      <button type="button" class="urgency-tag selected" data-urgency="Minor" onclick="selectUrgency(this)">Minor</button>
+      <button type="button" class="urgency-tag" data-urgency="Major" onclick="selectUrgency(this)">Major</button>
+      <button type="button" class="urgency-tag" data-urgency="Critical" onclick="selectUrgency(this)">Critical</button>
+    </div>
+    <label>Description</label>
+    <textarea id="complaintDescription" placeholder="Describe the issue in detail…"></textarea>
+    <label style="margin-top:12px;">Media attachments</label>
+    <input id="complaintMedia" type="file" accept="image/*,.pdf" multiple/>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <button class="btn btn-primary" onclick="submitComplaint()"><i class="fa fa-paper-plane"></i> Submit Ticket</button>
+      <button class="btn btn-sm" style="background:transparent;border:1px solid var(--border);" onclick="closeComplaintModal()">Cancel</button>
+    </div>
+    <p id="complaintFormMsg" style="font-size:13px;margin-top:10px;color:var(--accent-soft);"></p>
+  </div>
+</div>
+
 <!-- ====== BUILDER PORTAL ====== -->
 <section id="builder-portal" class="section" style="display:none;">
   <div class="auth-container">
     <div class="auth-card">
       <div class="auth-title"><i class="fa fa-hard-hat"></i> Builder Login</div>
-      <div class="auth-subtitle">Enter your <b>firm name / username</b> and then open any project with its 10‑digit code.</div>
-      <label><i class="fa fa-building"></i> Username</label>
-      <input id="builderName" placeholder="Builder / firm name" autocomplete="off"/>
+      <div class="auth-subtitle">Secure access for registered builders — use email/password or Google.</div>
+      <label><i class="fa fa-envelope"></i> Email</label>
+      <input id="builderEmail" type="email" placeholder="builder@demo.in" autocomplete="email"/>
+      <label><i class="fa fa-lock"></i> Password</label>
+      <input id="builderPassword" type="password" placeholder="Your password" autocomplete="current-password"/>
       <button class="btn btn-primary" onclick="loginBuilder()"><i class="fa fa-sign-in-alt"></i> Login as Builder</button>
+      <button class="btn google-btn" onclick="loginBuilderGoogle()"><i class="fab fa-google"></i> Continue with Google</button>
       <p id="builderLoginMsg" style="font-size:13px;margin-top:10px;color:var(--accent-soft);font-weight:500;"></p>
     </div>
   </div>
@@ -1219,19 +1343,19 @@
     <div class="section-title" style="font-size:22px;margin-bottom:4px;">
       <i class="fa fa-tools"></i> Builder Project Dashboard
     </div>
-    <p class="section-subtitle">Welcome, <strong id="builderNameDisplay"></strong></p>
+    <p class="section-subtitle">Welcome, <strong id="builderNameDisplay"></strong>. Select a client from the sidebar to manage their property.</p>
 
-    <label><i class="fa fa-barcode"></i> Customer project code (10 digits)</label>
-    <input id="builderProjectCode" maxlength="10" placeholder="Example: 9823456712" autocomplete="off"/>
-    <button class="btn btn-primary" onclick="openBuilderProject()"><i class="fa fa-folder-open"></i> Open Project</button>
-    <p id="builderProjectMsg" style="font-size:13px;margin-top:8px;color:var(--accent-soft);font-weight:500;"></p>
+    <div class="dashboard-layout">
+      <aside class="sidebar">
+        <div class="sidebar-title">Active Clients</div>
+        <div id="builderClientsSidebar" class="sidebar-nav"></div>
+      </aside>
 
-    <div id="builderProjectsList" class="stats-grid" style="margin-top:20px;"></div>
+    <div id="builderProjectArea" style="display:none; flex:1;">
+      <h4 class="section-title"><i class="fa fa-building"></i> <span id="builderProjectTitleDisplay"></span></h4>
+      <p class="section-subtitle" id="builderClientMeta"></p>
 
-    <div id="builderProjectArea" style="display:none; margin-top:20px;">
-      <h4 class="section-title"><i class="fa fa-building"></i> Customer Project: <span id="builderProjectCodeDisplay" class="badge-inline"></span></h4>
-
-      <div class="dashboard-layout">
+      <div class="dashboard-layout" style="margin-top:12px;">
         <aside class="sidebar">
           <div class="sidebar-title">Builder Controls</div>
           <div class="sidebar-nav">
@@ -1417,6 +1541,7 @@
         </div>
       </div>
     </div>
+    </div>
   </div>
 </section>
 
@@ -1508,12 +1633,23 @@
 
   // Session hints (allowed in localStorage)
   const B2C_LAST_CUSTOMER_CODE_KEY = 'b2c_last_customer_code';
+  const B2C_LAST_CUSTOMER_PHONE_KEY = 'b2c_last_customer_phone';
   const B2C_LAST_BUILDER_PROJECT_KEY = 'b2c_last_builder_project';
 
   let currentCustomerCode  = null;
+  let currentCustomerPhone = null;
+  let customerProjects     = [];
+  let currentCustomerProjectId = null;
+  let selectedComplaintUrgency = 'Minor';
+  let builderClients       = [];
+  let activeBuilderClientKey = null;
   let builderLoggedIn      = false;
   let currentBuilderProject= null;
   let domainChart          = null;
+
+  function formatInr(amount){
+    return '₹' + Number(amount || 0).toLocaleString('en-IN');
+  }
 
   // ===== THEME =====
   function toggleTheme(){
@@ -1591,12 +1727,22 @@
   // ===== RESET =====
   function resetCustomerState(){
     currentCustomerCode = null;
-    try { localStorage.removeItem(B2C_LAST_CUSTOMER_CODE_KEY); } catch(e){}
+    currentCustomerPhone = null;
+    customerProjects = [];
+    currentCustomerProjectId = null;
+    try {
+      localStorage.removeItem(B2C_LAST_CUSTOMER_CODE_KEY);
+      localStorage.removeItem(B2C_LAST_CUSTOMER_PHONE_KEY);
+    } catch(e){}
     $('customer-portal').style.display = 'none';
     $('customer-dashboard').style.display = 'none';
+    resetCustomerOtpFlow();
   }
   function resetBuilderState(){
-    builderLoggedIn = false; currentBuilderProject = null;
+    builderLoggedIn = false;
+    currentBuilderProject = null;
+    builderClients = [];
+    activeBuilderClientKey = null;
     try { localStorage.removeItem(B2C_LAST_BUILDER_PROJECT_KEY); } catch(e){}
     $('builder-portal').style.display = 'none';
     $('builderDashboard').style.display = 'none';
@@ -1607,58 +1753,141 @@
   function openCustomerLogin(){
     $('customer-portal').style.display = 'block';
     $('builder-portal').style.display = 'none';
-    $('custCodeInput').value = '';
+    resetCustomerOtpFlow();
     $('custLoginMsg').textContent = '';
     $('customer-dashboard').style.display = 'none';
   }
 
-  function enterCustomerPortal(){
-    const code = $('custCodeInput').value.trim();
-    const danger = getComputedStyle(document.documentElement).getPropertyValue('--danger');
-    if(code.length !== 10 || !/^\d+$/.test(code)){
-      $('custLoginMsg').style.color = danger;
-      $('custLoginMsg').textContent = 'Please enter a valid 10‑digit number.'; return;
+  function resetCustomerOtpFlow(){
+    if($('custPhoneInput')) $('custPhoneInput').value = '';
+    if($('custOtpInput')) $('custOtpInput').value = '';
+    if($('customer-phone-step')) $('customer-phone-step').style.display = 'block';
+    if($('customer-otp-step')) $('customer-otp-step').style.display = 'none';
+  }
+
+  async function sendCustomerOtp(){
+    const phone = ($('custPhoneInput') || {}).value?.trim() || '';
+    const msg = $('custLoginMsg');
+    if(phone.length !== 10 || !/^\d+$/.test(phone)){
+      msg.style.color = 'var(--danger)';
+      msg.textContent = 'Enter a valid 10-digit mobile number.';
+      return;
     }
+    try {
+      await apiRequest('/auth/customer/otp/send', { method:'POST', body:JSON.stringify({ phoneNumber: phone }) }, 'customer');
+      currentCustomerPhone = phone;
+      $('customer-phone-step').style.display = 'none';
+      $('customer-otp-step').style.display = 'block';
+      msg.style.color = 'var(--success)';
+      msg.textContent = 'OTP sent. Use 123456 for demo verification.';
+    } catch(err){
+      msg.style.color = 'var(--danger)';
+      msg.textContent = err.message;
+    }
+  }
+
+  function populatePropertySwitcher(projects, selectedCode){
+    const select = $('propertySwitcher');
+    if(!select) return;
+    select.innerHTML = '';
+    (projects || []).forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.code || p.id;
+      opt.textContent = p.title || p.code || 'Property';
+      if((p.code || p.id) === selectedCode) opt.selected = true;
+      select.appendChild(opt);
+    });
+    const active = (projects || []).find(p => (p.code || p.id) === selectedCode);
+    if($('custPropertyMeta') && active){
+      $('custPropertyMeta').textContent = active.code ? 'Code: ' + active.code : '';
+    }
+  }
+
+  async function activateCustomerProject(code){
+    if(!code) return;
     currentCustomerCode = code;
-    $('custLoginMsg').style.color = 'var(--success)';
-    $('custLoginMsg').textContent = 'Login successful. Opening your dashboard…';
-    $('customer-dashboard').style.display = 'block';
-    $('custCodeDisplay').textContent = code;
-    showCustomerTab('updates');
+    try { localStorage.setItem(B2C_LAST_CUSTOMER_CODE_KEY, code); } catch(e){}
+    const project = (customerProjects || []).find(p => (p.code || p.id) === code);
+    currentCustomerProjectId = project?.id || project?._id || null;
+    populatePropertySwitcher(customerProjects, code);
+    await syncProjectToLocal(code, 'customer');
     renderStatsDashboard();
     renderUpdatesForCode(code);
     renderCustomerEstimation();
     renderCustomer3D();
     renderPhases();
     renderMilestoneTimeline();
-    renderSmartAlerts();
-    renderQuickFilters();
-    scrollToEl($('customer-dashboard'));
-    showNotification('Logged in as customer.');
   }
 
+  async function switchCustomerProperty(code){
+    if(!code || code === currentCustomerCode) return;
+    await activateCustomerProject(code);
+    const tab = document.querySelector('.sidebar-item.active');
+    if(tab && tab.id === 'sidePayments') renderPaymentsEscrow();
+    else if(tab && tab.id === 'sideComplaints') renderComplaintsTable();
+    showNotification('Switched to ' + code);
+  }
+
+  async function verifyCustomerOtp(){
+    const phone = currentCustomerPhone || ($('custPhoneInput') || {}).value?.trim();
+    const otp = ($('custOtpInput') || {}).value?.trim();
+    const msg = $('custLoginMsg');
+    if(!phone || !otp){
+      msg.style.color = 'var(--danger)';
+      msg.textContent = 'Enter the OTP sent to your phone.';
+      return;
+    }
+    try {
+      const data = await apiRequest('/auth/customer/otp/verify', {
+        method:'POST',
+        body:JSON.stringify({ phoneNumber: phone, otp })
+      }, 'customer');
+      b2cSession.customerToken = data.token;
+      currentCustomerPhone = phone;
+      customerProjects = data.projects || data.user?.projects || [];
+      try {
+        localStorage.setItem(B2C_LAST_CUSTOMER_PHONE_KEY, phone);
+      } catch(e){}
+      msg.style.color = 'var(--success)';
+      msg.textContent = 'Login successful. Opening your dashboard…';
+      $('customer-dashboard').style.display = 'block';
+      if($('custPhoneDisplay')) $('custPhoneDisplay').textContent = phone;
+      const firstCode = customerProjects[0]?.code || customerProjects[0]?.id;
+      if(!firstCode) throw new Error('No properties linked to this account.');
+      populatePropertySwitcher(customerProjects, firstCode);
+      await activateCustomerProject(firstCode);
+      showCustomerTab('updates');
+      scrollToEl($('customer-dashboard'));
+      showNotification('Welcome back!');
+    } catch(err){
+      msg.style.color = 'var(--danger)';
+      msg.textContent = err.message;
+    }
+  }
+
+  async function enterCustomerPortal(){ await verifyCustomerOtp(); }
+
   function setSidebarActive(which){
-    ['sideDaily','sideEstimate','sideCalendar','sideAnalytics','sideActivity','sideBills',
-     'sideDomainStatus','sideCostSummary','sideApprovals','sideTimeline','sideDocLib','sideDelays'
+    ['sideDaily','sideEstimate','sideCalendar','sidePayments','sideComplaints','sideBills',
+     'sideDomainStatus','sideCostSummary','sideApprovals','sideDocLib','sideDelays'
     ].forEach(id => $(id) && $(id).classList.remove('active'));
     if(which === 'updates') $('sideDaily') && $('sideDaily').classList.add('active');
     else if(which === 'estimate3d') $('sideEstimate') && $('sideEstimate').classList.add('active');
     else if(which === 'calendar') $('sideCalendar') && $('sideCalendar').classList.add('active');
-    else if(which === 'analytics') $('sideAnalytics') && $('sideAnalytics').classList.add('active');
-    else if(which === 'activity') $('sideActivity') && $('sideActivity').classList.add('active');
+    else if(which === 'payments') $('sidePayments') && $('sidePayments').classList.add('active');
+    else if(which === 'complaints') $('sideComplaints') && $('sideComplaints').classList.add('active');
     else if(which === 'bills') $('sideBills') && $('sideBills').classList.add('active');
     else if(which === 'domainstatus') $('sideDomainStatus') && $('sideDomainStatus').classList.add('active');
     else if(which === 'costsummary') $('sideCostSummary') && $('sideCostSummary').classList.add('active');
     else if(which === 'approvals') $('sideApprovals') && $('sideApprovals').classList.add('active');
-    else if(which === 'smarttimeline') $('sideTimeline') && $('sideTimeline').classList.add('active');
     else if(which === 'doclibrary') $('sideDocLib') && $('sideDocLib').classList.add('active');
     else if(which === 'delays') $('sideDelays') && $('sideDelays').classList.add('active');
   }
 
   function showCustomerTab(which){
-    const allTabs = ['customerUpdates','customerEstimate3D','customerCalendar','customerAnalytics',
-      'customerActivity','customerBills','customerDomainStatus','customerCostSummary',
-      'customerApprovals','customerSmartTimeline','customerDocLibrary','customerDelays'];
+    const allTabs = ['customerUpdates','customerEstimate3D','customerCalendar','customerPayments',
+      'customerComplaints','customerBills','customerDomainStatus','customerCostSummary',
+      'customerApprovals','customerDocLibrary','customerDelays'];
     allTabs.forEach(id => { const el = $(id); if(el) el.style.display = 'none'; });
     const filterRow = $('domainFilterRow');
     if(filterRow) filterRow.style.display = 'none';
@@ -1670,12 +1899,12 @@
       renderDomainCostPanel();
     } else if(which === 'calendar'){
       $('customerCalendar').style.display = 'block';
-    } else if(which === 'analytics'){
-      if($('customerAnalytics')) $('customerAnalytics').style.display = 'block';
-      renderDomainAnalytics();
-    } else if(which === 'activity'){
-      if($('customerActivity')) $('customerActivity').style.display = 'block';
-      renderActivityFeed();
+    } else if(which === 'payments'){
+      if($('customerPayments')) $('customerPayments').style.display = 'block';
+      renderPaymentsEscrow();
+    } else if(which === 'complaints'){
+      if($('customerComplaints')) $('customerComplaints').style.display = 'block';
+      renderComplaintsTable();
     } else if(which === 'bills'){
       if($('customerBills')) $('customerBills').style.display = 'block';
       renderBillsForCustomer();
@@ -1688,9 +1917,6 @@
     } else if(which === 'approvals'){
       if($('customerApprovals')) $('customerApprovals').style.display = 'block';
       renderCustomerApprovals();
-    } else if(which === 'smarttimeline'){
-      if($('customerSmartTimeline')) $('customerSmartTimeline').style.display = 'block';
-      renderSmartUnifiedTimeline();
     } else if(which === 'doclibrary'){
       if($('customerDocLibrary')) $('customerDocLibrary').style.display = 'block';
       renderDocLibraryForCustomer();
@@ -1699,6 +1925,126 @@
       renderDelaysForCustomer();
     }
     setSidebarActive(which);
+  }
+
+  function invoiceStatusClass(status){
+    if(status === 'Paid') return 'status-paid';
+    if(status === 'Due Now') return 'status-due';
+    return 'status-upcoming';
+  }
+
+  function complaintStatusClass(status){
+    if(status === 'Closed') return 'status-closed';
+    if(status === 'Resolved_Pending') return 'status-resolved';
+    if(status === 'In Progress') return 'status-progress';
+    return 'status-submitted';
+  }
+
+  async function renderPaymentsEscrow(){
+    if(!currentCustomerCode) return;
+    try {
+      const data = await apiRequest('/payments/code/' + encodeURIComponent(currentCustomerCode), {}, 'customer');
+      const summary = data.summary || {};
+      $('escrowContractValue').textContent = formatInr(summary.contractValue);
+      $('escrowPaidToDate').textContent = formatInr(summary.paidToDate);
+      $('escrowDueNow').textContent = formatInr(summary.dueNow);
+
+      const milestoneBody = $('milestoneLedgerBody');
+      milestoneBody.innerHTML = (data.invoices || []).map(row => `
+        <tr>
+          <td>${escapeHtml(row.milestoneName || row.milestone_name || '—')}</td>
+          <td>${formatInr(row.baseAmount ?? row.base_amount)}</td>
+          <td>${formatInr(row.cgst)}</td>
+          <td>${formatInr(row.sgst)}</td>
+          <td>${formatInr(row.totalAmountInr ?? row.total_amount_inr)}</td>
+          <td><span class="status-badge ${invoiceStatusClass(row.status)}">${escapeHtml(row.status)}</span></td>
+        </tr>
+      `).join('') || '<tr><td colspan="6" class="note-muted">No milestones configured yet.</td></tr>';
+
+      const changeBody = $('changeOrdersBody');
+      changeBody.innerHTML = (data.changeOrders || []).map(row => `
+        <tr>
+          <td>${escapeHtml(row.title)}</td>
+          <td>${formatInr(row.baseAmount ?? row.base_amount)}</td>
+          <td>${formatInr(row.cgst)}</td>
+          <td>${formatInr(row.sgst)}</td>
+          <td>${formatInr(row.totalAmountInr ?? row.total_amount_inr)}</td>
+          <td><span class="status-badge status-paid">${escapeHtml(row.status || 'Approved')}</span></td>
+        </tr>
+      `).join('') || '<tr><td colspan="6" class="note-muted">No approved change orders yet.</td></tr>';
+    } catch(err){
+      $('escrowContractValue').textContent = formatInr(0);
+      $('escrowPaidToDate').textContent = formatInr(0);
+      $('escrowDueNow').textContent = formatInr(0);
+      if($('milestoneLedgerBody')) $('milestoneLedgerBody').innerHTML = '<tr><td colspan="6" class="note-muted">' + escapeHtml(err.message) + '</td></tr>';
+    }
+  }
+
+  async function renderComplaintsTable(){
+    if(!currentCustomerCode) return;
+    const body = $('complaintsTableBody');
+    if(!body) return;
+    try {
+      const data = await apiRequest('/complaints/code/' + encodeURIComponent(currentCustomerCode), {}, 'customer');
+      const rows = data.complaints || [];
+      body.innerHTML = rows.map(c => {
+        const idShort = String(c._id || c.id || '').slice(0, 8);
+        const closeBtn = c.status === 'Resolved_Pending'
+          ? `<button class="btn btn-primary btn-sm" onclick="confirmCloseComplaint('${c._id || c.id}')"><i class="fa fa-check-double"></i> Confirm Closed</button>`
+          : '—';
+        return `<tr>
+          <td>${escapeHtml(idShort)}</td>
+          <td>${escapeHtml(c.category)}</td>
+          <td>${escapeHtml(c.urgency)}</td>
+          <td>${escapeHtml(c.description)}</td>
+          <td><span class="status-badge ${complaintStatusClass(c.status)}">${escapeHtml(c.status)}</span></td>
+          <td>${closeBtn}</td>
+        </tr>`;
+      }).join('') || '<tr><td colspan="6" class="note-muted">No service tickets yet.</td></tr>';
+    } catch(err){
+      body.innerHTML = '<tr><td colspan="6" class="note-muted">' + escapeHtml(err.message) + '</td></tr>';
+    }
+  }
+
+  function openComplaintModal(){ $('complaintModal')?.classList.add('open'); }
+  function closeComplaintModal(){ $('complaintModal')?.classList.remove('open'); }
+
+  function selectUrgency(el){
+    document.querySelectorAll('.urgency-tag').forEach(t => t.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedComplaintUrgency = el.dataset.urgency || 'Minor';
+  }
+
+  async function submitComplaint(){
+    const msg = $('complaintFormMsg');
+    const description = ($('complaintDescription') || {}).value?.trim();
+    if(!description){ msg.textContent = 'Description is required.'; return; }
+    try {
+      await apiRequest('/complaints/code/' + encodeURIComponent(currentCustomerCode), {
+        method:'POST',
+        body:JSON.stringify({
+          category: $('complaintCategory').value,
+          urgency: selectedComplaintUrgency,
+          description,
+          mediaUrls: []
+        })
+      }, 'customer');
+      closeComplaintModal();
+      $('complaintDescription').value = '';
+      msg.textContent = '';
+      renderComplaintsTable();
+      showNotification('Complaint submitted');
+    } catch(err){ msg.textContent = err.message; }
+  }
+
+  async function confirmCloseComplaint(complaintId){
+    if(!complaintId) return;
+    if(!confirm('Confirm that this issue is permanently resolved and close the ticket?')) return;
+    try {
+      await apiRequest('/complaints/' + complaintId + '/close', { method:'PUT' }, 'customer');
+      renderComplaintsTable();
+      showNotification('Complaint marked Closed');
+    } catch(err){ showNotification(err.message, 3500); }
   }
 
   // ===== STEP 12 — renderPhases (domain-based) =====
@@ -2121,71 +2467,11 @@
   function openBuilderLogin(){
     $('builder-portal').style.display = 'block';
     $('customer-portal').style.display = 'none';
-    $('builderName').value = '';
+    if($('builderEmail')) $('builderEmail').value = '';
+    if($('builderPassword')) $('builderPassword').value = '';
     $('builderLoginMsg').textContent = '';
     $('builderDashboard').style.display = 'none';
   }
-
-  function loginBuilder(){
-    const name = $('builderName').value.trim();
-    const msg = $('builderLoginMsg');
-    const danger = getComputedStyle(document.documentElement).getPropertyValue('--danger');
-    if(!name){ msg.style.color=danger; msg.textContent='Please enter your name or firm name.'; return; }
-    builderLoggedIn = true;
-    msg.style.color = 'var(--success)';
-    msg.textContent = 'Logged in as builder.';
-    $('builderDashboard').style.display = 'block';
-    $('builderNameDisplay').textContent = name;
-    $('builderProjectCode').value = '';
-    $('builderProjectMsg').textContent = '';
-    $('builderProjectArea').style.display = 'none';
-    currentBuilderProject = null;
-    renderBuilderProjectsList();
-    scrollToEl($('builderDashboard'));
-    showNotification('Logged in as builder.');
-  }
-
-  function openBuilderProject(){
-    const danger = getComputedStyle(document.documentElement).getPropertyValue('--danger');
-    if(!builderLoggedIn){ $('builderProjectMsg').style.color=danger; $('builderProjectMsg').textContent='Login as builder first.'; return; }
-    const code = $('builderProjectCode').value.trim();
-    const msg = $('builderProjectMsg');
-    if(code.length !== 10 || !/^\d+$/.test(code)){
-      msg.style.color=danger; msg.textContent='Enter a valid 10‑digit project code.'; return;
-    }
-    currentBuilderProject = code;
-    $('builderProjectArea').style.display = 'block';
-    $('builderProjectCodeDisplay').textContent = code;
-    msg.style.color = 'var(--success)';
-    msg.textContent = 'Project opened successfully.';
-    renderBuilderSuggestions();
-    showNotification('Builder opened project ' + code);
-    scrollToEl($('builderProjectArea'));
-  }
-
-  function renderBuilderProjectsList(){
-    const list = $('builderProjectsList');
-    if(!list) return;
-    const codes = [];
-    for(const k in localStorage){
-      if(k && k.startsWith("b2c_updates_")) codes.push(k.substring("b2c_updates_".length));
-    }
-    list.innerHTML = '';
-    if(!codes.length){ list.innerHTML = '<div class="stat-card"><div class="stat-icon"><i class="fa fa-folder-open"></i></div><span class="stat-value" style="font-size:14px;">No projects yet</span></div>'; return; }
-    codes.slice(-5).forEach(code => {
-      const card = document.createElement('div');
-      card.className = 'stat-card';
-      card.innerHTML = `
-        <div class="stat-icon"><i class="fa fa-folder"></i></div>
-        <span class="stat-value" style="font-size:16px;">${escapeHtml(code)}</span>
-        <span class="stat-label">Project Code</span>
-        <button class="btn btn-primary btn-sm" onclick="builderQuickOpen('${code}')" style="margin-top:8px;">Open</button>
-      `;
-      list.appendChild(card);
-    });
-  }
-
-  function builderQuickOpen(code){ $('builderProjectCode').value = code; openBuilderProject(); }
 
   // ===== STEP 3 — saveEstimation with ARRAY storage =====
   function saveEstimation(){
@@ -3201,15 +3487,15 @@
   async function syncProjectToLocal(code, role){
     try {
       const [progress, estimations, planned, bills, feedback, approvals, docs, delays, activity] = await Promise.all([
-        apiRequest('/progress/' + code, {}, role),
-        apiRequest('/estimations/' + code, {}, role),
-        apiRequest('/uploads/' + code + '/planned-image', {}, role),
-        apiRequest('/uploads/' + code + '/bill', {}, role),
-        apiRequest('/feedback/' + code, {}, role),
-        apiRequest('/approvals/' + code, {}, role),
-        apiRequest('/uploads/' + code + '/document', {}, role),
-        apiRequest('/delays/' + code, {}, role),
-        apiRequest('/projects/' + code + '/activity', {}, role)
+        apiRequest('/progress/' + encodeURIComponent(code), {}, role),
+        apiRequest('/estimations/' + encodeURIComponent(code), {}, role),
+        apiRequest('/uploads/' + encodeURIComponent(code) + '/planned-image', {}, role),
+        apiRequest('/uploads/' + encodeURIComponent(code) + '/bill', {}, role),
+        apiRequest('/feedback/' + encodeURIComponent(code), {}, role),
+        apiRequest('/approvals/' + encodeURIComponent(code), {}, role),
+        apiRequest('/uploads/' + encodeURIComponent(code) + '/document', {}, role),
+        apiRequest('/delays/' + encodeURIComponent(code), {}, role),
+        apiRequest('/projects/' + encodeURIComponent(code) + '/activity', {}, role)
       ]);
 
       localStorage.setItem(updatesKey(code), JSON.stringify((progress.updates || []).map(u => ({
@@ -3298,43 +3584,35 @@
   }
 
   async function restoreSessionFromBackend(){
-    // Customer session restore
     try {
+      const phone = localStorage.getItem(B2C_LAST_CUSTOMER_PHONE_KEY) || '';
       const code = localStorage.getItem(B2C_LAST_CUSTOMER_CODE_KEY) || '';
-      if(code && /^\d{10}$/.test(code) && b2cSession.customerToken){
-        currentCustomerCode = code;
+      if(b2cSession.customerToken){
+        const profile = await apiRequest('/auth/me', {}, 'customer');
+        customerProjects = profile.projects || [];
+        currentCustomerPhone = phone || profile.user?.phoneNumber || profile.user?.phone || '';
+        $('customer-portal').style.display = 'block';
         $('customer-dashboard').style.display = 'block';
-        $('custCodeDisplay').textContent = code;
-        await syncProjectToLocal(code, 'customer');
-        showCustomerTab('updates');
-        renderStatsDashboard();
-        renderUpdatesForCode(code);
-        renderCustomerEstimation();
-        renderCustomer3D();
-        renderPhases();
-        renderMilestoneTimeline();
-        renderSmartAlerts();
-        renderQuickFilters();
+        if($('custPhoneDisplay')) $('custPhoneDisplay').textContent = currentCustomerPhone;
+        const activeCode = code || customerProjects[0]?.code || customerProjects[0]?.id;
+        if(activeCode){
+          populatePropertySwitcher(customerProjects, activeCode);
+          await activateCustomerProject(activeCode);
+          showCustomerTab('updates');
+        }
       }
     } catch(e) {}
 
-    // Builder session restore (login + last opened project)
     try {
-      const code = localStorage.getItem(B2C_LAST_BUILDER_PROJECT_KEY) || '';
-      if(code && /^\d{10}$/.test(code) && b2cSession.builderToken){
+      if(b2cSession.builderToken){
         builderLoggedIn = true;
-        currentBuilderProject = code;
+        $('builder-portal').style.display = 'block';
         $('builderDashboard').style.display = 'block';
-        $('builderProjectArea').style.display = 'block';
-        $('builderProjectCodeDisplay').textContent = code;
-        await syncProjectToLocal(code, 'builder');
-        renderBuilderSuggestions();
-        await renderBuilderProjectsList();
-      } else if(b2cSession.builderToken) {
-        // Token exists, but no opened project yet
-        builderLoggedIn = true;
-        $('builderDashboard').style.display = 'block';
-        await renderBuilderProjectsList();
+        const profile = await apiRequest('/auth/me');
+        if($('builderNameDisplay')) $('builderNameDisplay').textContent = profile.user?.name || 'Builder';
+        await renderBuilderClientsSidebar();
+        const lastCode = localStorage.getItem(B2C_LAST_BUILDER_PROJECT_KEY) || '';
+        if(lastCode) await selectBuilderClient(lastCode, true);
       }
     } catch(e) {}
   }
@@ -3343,118 +3621,105 @@
     restoreSessionFromBackend();
   });
 
-  async function renderBuilderProjectsList(){
-    const list = $('builderProjectsList');
-    if(!list) return;
+  async function renderBuilderClientsSidebar(){
+    const sidebar = $('builderClientsSidebar');
+    if(!sidebar) return;
     try {
-      const data = await apiRequest('/projects');
-      const projects = data.projects || [];
-      if(!projects.length){
-        list.innerHTML = "<div class='note-muted'>No projects opened yet. Enter a 10-digit project code to create one.</div>";
+      const data = await apiRequest('/builder/customers');
+      builderClients = data.customers || [];
+      if(!builderClients.length){
+        sidebar.innerHTML = "<div class='note-muted' style='padding:12px;'>No clients linked yet.</div>";
         return;
       }
-      list.innerHTML = '';
-      projects.forEach(project => {
-        const code = project.code || '';
-        const card = document.createElement('div');
-        card.className = 'stat-card';
-        card.innerHTML = `
-          <h3>${escapeHtml(code)}</h3>
-          <p>${escapeHtml(project.title || 'Construction Project')}</p>
-          <small>${Number(project.completionPercentage || 0)}% complete</small><br>
-          <button class="btn btn-primary btn-sm" onclick="builderQuickOpen('${escapeHtml(code)}')" style="margin-top:8px;">Open</button>
+      sidebar.innerHTML = '';
+      builderClients.forEach(client => {
+        const key = client.projectCode || client.projectId;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'builder-client-item' + (activeBuilderClientKey === key ? ' active' : '');
+        btn.innerHTML = `
+          <div class="builder-client-name">${escapeHtml(client.name || 'Customer')}</div>
+          <div class="builder-client-meta"><i class="fa fa-phone"></i> ${escapeHtml(client.phoneNumber || '—')}</div>
+          <div class="builder-client-meta"><i class="fa fa-building"></i> ${escapeHtml(client.projectTitle || 'Property')}</div>
         `;
-        list.appendChild(card);
+        btn.onclick = () => selectBuilderClient(key);
+        sidebar.appendChild(btn);
       });
     } catch(err) {
-      list.innerHTML = "<div class='note-muted'>Login as builder to load projects from Supabase.</div>";
+      sidebar.innerHTML = "<div class='note-muted' style='padding:12px;'>" + escapeHtml(err.message) + "</div>";
     }
   }
 
+  async function selectBuilderClient(code, silent){
+    if(!code || !builderLoggedIn) return;
+    activeBuilderClientKey = code;
+    currentBuilderProject = code;
+    try { localStorage.setItem(B2C_LAST_BUILDER_PROJECT_KEY, code); } catch(e){}
+    const client = builderClients.find(c => (c.projectCode || c.projectId) === code) || {};
+    $('builderProjectArea').style.display = 'block';
+    if($('builderProjectTitleDisplay')) $('builderProjectTitleDisplay').textContent = client.projectTitle || code;
+    if($('builderClientMeta')) $('builderClientMeta').textContent = (client.name || 'Customer') + ' · ' + (client.phoneNumber || '');
+    await renderBuilderClientsSidebar();
+    await syncProjectToLocal(code, 'builder');
+    renderBuilderSuggestions();
+    if(!silent) scrollToEl($('builderProjectArea'));
+  }
+
   async function loginBuilder(){
-    const name = $('builderName').value.trim();
+    const email = ($('builderEmail') || {}).value?.trim();
+    const password = ($('builderPassword') || {}).value || '';
     const msg = $('builderLoginMsg');
-    if(!name){ msg.textContent = 'Enter builder username.'; return; }
-    const username = name.toLowerCase().replace(/[^a-z0-9_]/g, '_');
-    const password = username + '_123456';
+    if(!email || !password){ msg.textContent = 'Enter email and password.'; return; }
     try {
       let data;
       try {
-        data = await apiRequest('/auth/builder/login', { method:'POST', body:JSON.stringify({ username, password }) });
+        data = await apiRequest('/auth/builder/login', { method:'POST', body:JSON.stringify({ email, password }) });
       } catch(e) {
-        data = await apiRequest('/auth/builder/register', { method:'POST', body:JSON.stringify({ name, username, password, companyName:name }) });
+        data = await apiRequest('/auth/builder/register', {
+          method:'POST',
+          body:JSON.stringify({ name: email.split('@')[0], email, password, companyName: email.split('@')[0] })
+        });
       }
       b2cSession.builderToken = data.token;
       builderLoggedIn = true;
       msg.style.color = 'var(--success)';
       msg.textContent = 'Logged in securely as builder.';
+      $('builder-portal').style.display = 'block';
       $('builderDashboard').style.display = 'block';
-      $('builderNameDisplay').textContent = data.user.name || name;
+      $('builderNameDisplay').textContent = data.user.name || email;
       $('builderProjectArea').style.display = 'none';
       currentBuilderProject = null;
-      try { localStorage.removeItem(B2C_LAST_BUILDER_PROJECT_KEY); } catch(e){}
-      renderBuilderProjectsList();
+      activeBuilderClientKey = null;
+      await renderBuilderClientsSidebar();
       scrollToEl($('builderDashboard'));
-      showNotification('Builder backend login complete.');
+      showNotification('Builder login complete.');
     } catch(err) {
       msg.style.color = 'var(--danger)';
       msg.textContent = err.message;
     }
   }
 
-  async function openBuilderProject(){
-    const code = $('builderProjectCode').value.trim();
-    const msg = $('builderProjectMsg');
-    if(!builderLoggedIn){ msg.textContent = 'Login as builder first.'; return; }
-    if(code.length !== 10 || !/^\d+$/.test(code)){ msg.textContent = 'Enter a valid 10-digit project code.'; return; }
+  async function loginBuilderGoogle(){
+    const msg = $('builderLoginMsg');
+    const email = prompt('Enter Google account email for demo OAuth:', 'builder@demo.in');
+    if(!email) return;
     try {
-      try {
-        await apiRequest('/projects/' + code);
-      } catch(e) {
-        await apiRequest('/projects', { method:'POST', body:JSON.stringify({ code, title:'Construction Project', customerName:'Customer ' + code }) });
-      }
-      currentBuilderProject = code;
-      try { localStorage.setItem(B2C_LAST_BUILDER_PROJECT_KEY, code); } catch(e){}
-      $('builderProjectArea').style.display = 'block';
-      $('builderProjectCodeDisplay').textContent = code;
-      await syncProjectToLocal(code, 'builder');
-      renderBuilderSuggestions();
-      await renderBuilderProjectsList();
+      const data = await apiRequest('/auth/builder/google', {
+        method:'POST',
+        body:JSON.stringify({ email, googleId: 'google-demo-' + Date.now(), name: email.split('@')[0] })
+      });
+      b2cSession.builderToken = data.token;
+      builderLoggedIn = true;
       msg.style.color = 'var(--success)';
-      msg.textContent = 'Project opened from backend.';
-      scrollToEl($('builderProjectArea'));
+      msg.textContent = 'Google sign-in successful.';
+      $('builder-portal').style.display = 'block';
+      $('builderDashboard').style.display = 'block';
+      $('builderNameDisplay').textContent = data.user.name || email;
+      await renderBuilderClientsSidebar();
+      showNotification('Signed in with Google');
     } catch(err) {
       msg.style.color = 'var(--danger)';
       msg.textContent = err.message;
-    }
-  }
-
-  async function enterCustomerPortal(){
-    const code = $('custCodeInput').value.trim();
-    if(code.length !== 10 || !/^\d+$/.test(code)){ $('custLoginMsg').textContent = 'Please enter a valid 10-digit number.'; return; }
-    try {
-      const data = await apiRequest('/auth/customer/login', { method:'POST', body:JSON.stringify({ projectCode:code }) }, 'customer');
-      b2cSession.customerToken = data.token;
-      currentCustomerCode = code;
-      try { localStorage.setItem(B2C_LAST_CUSTOMER_CODE_KEY, code); } catch(e){}
-      $('custLoginMsg').style.color = 'var(--success)';
-      $('custLoginMsg').textContent = 'Login successful. Opening your dashboard...';
-      $('customer-dashboard').style.display = 'block';
-      $('custCodeDisplay').textContent = code;
-      await syncProjectToLocal(code, 'customer');
-      showCustomerTab('updates');
-      renderStatsDashboard();
-      renderUpdatesForCode(code);
-      renderCustomerEstimation();
-      renderCustomer3D();
-      renderPhases();
-      renderMilestoneTimeline();
-      renderSmartAlerts();
-      renderQuickFilters();
-      scrollToEl($('customer-dashboard'));
-    } catch(err) {
-      $('custLoginMsg').style.color = 'var(--danger)';
-      $('custLoginMsg').textContent = err.message;
     }
   }
 
